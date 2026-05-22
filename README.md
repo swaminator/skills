@@ -13,11 +13,11 @@
 
 Skills are portable instruction sets that teach AI agents how to use NVIDIA CUDA-X libraries, AI Blueprints, and platform tools correctly. This repository is a catalog: skills are maintained in their respective product repos and mirrored here daily via an automated sync pipeline. We are making NVIDIA skills available publicly and building this catalog in the open; see the [Roadmap](#roadmap) for what is planned next.
 
-## Staging Filter
+## Verification Policy
 
-This `staging` branch is synced from upstream `NVIDIA/skills` and features only verified skills with completed evaluations. To verify a featured skill, look for the `*.oms.sig` signature file in the skill folder and open its `evals.json` file to review the completed evaluation coverage.
+This catalog features only verified skills with completed evaluations. To verify a featured skill, look for the `*.oms.sig` signature file in the skill folder and open its `evals.json` file to review the completed evaluation coverage.
 
-At the upstream commit used for this branch, no skill currently has both files, so the filtered skill catalog is intentionally empty.
+No skill currently has both files, so the catalog is intentionally empty until skills meet the verification and evaluation gates.
 
 ---
 
@@ -99,7 +99,7 @@ For non-interactive installs, global installs, agent-specific installs, updates,
 <!-- skills-table-start -->
 | Product | Description | Skills | Catalog | Source | Version |
 |---------|-------------|:------:|---------|--------|---------|
-| _None_ | No upstream skill currently has both verification via `*.oms.sig` and completed evaluations in `evals.json`. | 0 | [`skills/`](skills/) | Upstream sync | 2026-05-22 |
+| _None_ | No skill currently has both verification via `*.oms.sig` and completed evaluations in `evals.json`. | 0 | [`skills/`](skills/) | Verification gate | 2026-05-22 |
 <!-- skills-table-end -->
 
 ---
