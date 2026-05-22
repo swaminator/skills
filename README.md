@@ -15,9 +15,9 @@ Skills are portable instruction sets that teach AI agents how to use NVIDIA CUDA
 
 ## Staging Filter
 
-This `staging` branch is synced from upstream `NVIDIA/skills` and filtered to include only skill folders that contain both an `evals.json` file and a `*.oms.sig` signature file.
+This `staging` branch is synced from upstream `NVIDIA/skills` and features only verified skills with completed evaluations. To verify a featured skill, look for the `*.oms.sig` signature file in the skill folder and open its `evals.json` file to review the completed evaluation coverage.
 
-At the upstream commit used for this branch, no skill satisfies both requirements, so the filtered skill catalog is intentionally empty.
+At the upstream commit used for this branch, no skill currently has both files, so the filtered skill catalog is intentionally empty.
 
 ---
 
@@ -99,7 +99,7 @@ For non-interactive installs, global installs, agent-specific installs, updates,
 <!-- skills-table-start -->
 | Product | Description | Skills | Catalog | Source | Version |
 |---------|-------------|:------:|---------|--------|---------|
-| _None_ | No upstream skill currently contains both an `evals.json` file and a `*.oms.sig` signature file. | 0 | [`skills/`](skills/) | Upstream sync | 2026-05-22 |
+| _None_ | No upstream skill currently has both verification via `*.oms.sig` and completed evaluations in `evals.json`. | 0 | [`skills/`](skills/) | Upstream sync | 2026-05-22 |
 <!-- skills-table-end -->
 
 ---
