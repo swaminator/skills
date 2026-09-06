@@ -1,14 +1,16 @@
 ---
 name: nemo-mbridge-perf-cuda-graphs
-description: Validate and use CUDA graph capture in Megatron Bridge, including local full-iteration graphs and Transformer Engine scoped graphs for attention, MLP, and MoE modules.
+description: Profile, validate, and use CUDA graph capture in Megatron Bridge, including local full-iteration graphs and Transformer Engine scoped graphs. Covers replay evidence, matched eager A/Bs, model-specific scopes, regressions, and failures.
 license: Apache-2.0
 when_to_use: Reducing host-driver overhead via CUDA graphs, or tracing a crash or regression to a CUDA graph config change; 'cuda_graph_impl', 'full iteration graph', 'TE scoped graph', 'graphed callables', 'CUDA graph capture'.
 ---
 
 # CUDA Graphs
 
-Stable docs: @docs/training/cuda-graphs.md
+Stable documentation: @docs/training/cuda-graphs.md
 Card: @skills/nemo-mbridge-perf-cuda-graphs/card.yaml
+
+<!-- NVSkills CI refresh: 2026-06-15. No instruction changes. -->
 
 ## What It Is
 
@@ -22,11 +24,12 @@ host-driver overhead. Bridge supports two implementations:
 
 ## Quick Decision
 
-Start with TE-scoped graphs for most training workloads, then verify replay
-timing against eager on the same dispatcher, layout, and container:
+First confirm a profile shows material host/launch gaps. Then test the narrowest
+TE-scoped graph candidate and verify replay timing against eager on the same
+dispatcher, layout, routing, precision, and container:
 
 - dense models: `attn`, then optionally `mlp`
-- dropless MoE: `attn moe_router moe_preprocess`
+- dropless MoE: `moe_router moe_preprocess`, then optionally `attn`
 - VLMs: the same dropless-MoE scope, but only after the real-data path is stable
 
 Use `local` + `full_iteration` only when you specifically want full-iteration
@@ -71,7 +74,7 @@ cfg.rng.te_rng_tracker = True
 
 ```python
 cfg.model.cuda_graph_impl = "transformer_engine"
-cfg.model.cuda_graph_scope = ["attn", "moe_router", "moe_preprocess"]
+cfg.model.cuda_graph_scope = ["moe_router", "moe_preprocess"]
 cfg.model.cuda_graph_warmup_steps = 3
 cfg.model.use_te_rng_tracker = True
 cfg.rng.te_rng_tracker = True
@@ -88,7 +91,7 @@ uv run python scripts/performance/run_script.py \
   -c bf16 \
   -ng 16 \
   --cuda_graph_impl transformer_engine \
-  --cuda_graph_scope attn,moe_router,moe_preprocess \
+  --cuda_graph_scope moe_router,moe_preprocess \
   ...
 ```
 
@@ -99,6 +102,11 @@ Valid CLI values live in `scripts/performance/argument_parser.py`:
 The performance harness uses a comma-separated `--cuda_graph_scope` value and
 auto-enables `model.use_te_rng_tracker` plus `rng.te_rng_tracker` when
 `--cuda_graph_impl` is not `none`.
+
+Scope names follow the actual MCore module type. `mamba` applies to real Mamba
+layers; do not use it as a generic label for every linear-attention block.
+Qwen3.5 Gated DeltaNet (GDN) lives under `self_attention`, so its applicable TE
+scope is `attn`, not `mamba`.
 
 ### Required constraints
 
@@ -123,6 +131,8 @@ auto-enables `model.use_te_rng_tracker` plus `rng.te_rng_tracker` when
 5. Compare eager against graph replay iterations after warmup and capture; do
    not include the capture step in steady-state timing.
 6. Only then widen scope or combine with overlap features.
+7. Re-run the eager/graph A/B on the final dispatcher, overlap, precision, and
+   recompute stack. An earlier graph win can disappear after other tuning.
 
 ## Code Anchors
 
@@ -230,9 +240,9 @@ def _delete_cuda_graphs(cuda_graph_helper):
 
 ### Positive recipe anchors
 
-- `scripts/performance/configs/deepseek/deepseek_workload_base_configs.py`
-- `scripts/performance/configs/qwen/qwen3_workload_base_configs.py`
-- `scripts/performance/configs/gpt_oss/gpt_oss_workload_base_configs.py`
+- `src/megatron/bridge/perf_recipes/deepseek/gb300/deepseek_v3.py`
+- `src/megatron/bridge/perf_recipes/qwen/gb300/qwen3_moe.py`
+- `src/megatron/bridge/perf_recipes/gpt_oss/gb300/gpt_oss.py`
 
 ### Tests
 
@@ -241,7 +251,7 @@ def _delete_cuda_graphs(cuda_graph_helper):
 | `tests/unit_tests/training/test_config.py` | `full_iteration` NaN-check constraint |
 | `tests/unit_tests/training/test_comm_overlap.py` | `delay_wgrad` + CUDA graph interaction |
 | `tests/unit_tests/models/test_gpt_full_te_layer_autocast_spec.py` | TE autocast with CUDA graphs |
-| `tests/functional_tests/recipes/test_llama_recipes_pretrain_cuda_graphs.py` | End-to-end local and TE graph smoke tests |
+| `tests/functional_tests/test_groups/recipes/test_llama_recipes_pretrain_cuda_graphs.py` | End-to-end local and TE graph smoke tests |
 | `tests/unit_tests/recipes/kimi/test_kimi_k2.py` | TE + CUDA graph recipe config |
 | `tests/unit_tests/recipes/gpt/test_gpt3_175b.py` | TE + CUDA graph recipe config |
 | `tests/unit_tests/recipes/qwen_vl/test_qwen25_vl_recipes.py` | VLM CUDA graph settings |
@@ -317,6 +327,10 @@ def _delete_cuda_graphs(cuda_graph_helper):
     iterations 5-8 averaged `42.00 s` versus `41.36 s` for eager. Treat
     scoped graphs as a bring-up candidate and validate on the target stack.
 
+14. **Scope names are structural, not architectural nicknames**: use `mamba`
+    only for real Mamba layers. Hybrid models such as Qwen3.5 place GDN in the
+    attention path, so graph it with `attn` when supported.
+
 ## Verification
 
 ### Unit tests
@@ -332,7 +346,7 @@ uv run python -m pytest \
 
 ```bash
 uv run python -m pytest \
-  tests/functional_tests/recipes/test_llama_recipes_pretrain_cuda_graphs.py -q
+  tests/functional_tests/test_groups/recipes/test_llama_recipes_pretrain_cuda_graphs.py -q
 ```
 
 ### Success criteria
