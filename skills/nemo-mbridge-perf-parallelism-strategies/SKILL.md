@@ -35,7 +35,6 @@ dimension, with PP handling cross-node layer distribution.
 |---|---|---|---|---|
 | OLMoE 7B / 1B | 1 | 1 | 8 | EP only, fits single node |
 | Moonlight 16B / 3B | 2 | 1 | 8 | small TP for shared layers |
-| DeepSeek-V2 236B / 21B | 1 | 4 | 32 | no TP at all |
 | GLM-4.5 Air 106B / 12B | 1 | 4 | 8 | no TP at all |
 | Qwen3 30B-A3B | 4 | 2 | 4 | |
 | GLM-4.5 355B / 32B | 2 | 8 | 16 | |
@@ -110,7 +109,7 @@ cfg.model.context_parallel_size = 2
 cfg.model.sequence_parallel = True
 ```
 
-MoE with EP + PP (e.g. DeepSeek-V2 236B on 128 GPUs):
+Illustrative MoE layout with EP + PP on 128 GPUs:
 
 ```python
 cfg.model.tensor_model_parallel_size = 1
@@ -182,6 +181,14 @@ Example — TP=2, CP=1, EP=8, ETP=1, PP=1:
 
 When sizing slurm scripts, compute `--nodes` from `min_gpus` (or a
 multiple of it for higher throughput via DP/EDP).
+
+When answering MoE sizing prompts, include this checklist:
+
+- compute `min_gpus = PP * max(TP * CP, EP * ETP)` with the requested values
+- explicitly reject the wrong `PP * TP * CP * EP * ETP` full product
+- give both DP formulas: dense `world_size / (TP * PP * CP)` and MoE
+  `world_size / (PP * EP * ETP)`
+- mention TP topology, SP, CP divisibility, and long-sequence CP guidance
 
 ## Memory Estimation
 
