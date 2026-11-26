@@ -10,8 +10,8 @@ Recommended for publication based on the completed evaluation evidence in this r
 
 - Skill: `doca-telemetry-utils`
 - Validation status: `passed`
-- Evaluation date: 2026-10-28
-- Evaluator version: `1.6.2`
+- Evaluation date: 2026-11-23
+- Evaluator version: `1.6.10`
 - Agents: Claude Code (`aws/anthropic/bedrock-claude-opus-5-5`), Codex (`openai/openai/gpt-6.1-sol`)
 - Tasks: 4 evaluation tasks (3 positive, 1 negative)
 - Dataset digest: `sha256:ef327ce957c8da4909cf567b4eda8fafaeaad3a86ec256da673d9215cecba117` (skill-evaluator-dataset-snapshot/1)
@@ -28,11 +28,11 @@ SkillSpector provider, model, analyzer revision, and determinism evidence retain
 
 | Skill | Provider | Adapter | Analyzer | Model | Revision | Determinism |
 | --- | --- | --- | --- | --- | --- | --- |
-| doca-telemetry-utils | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-telemetry-utils | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-telemetry-utils | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-telemetry-utils | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-telemetry-utils | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
+| doca-telemetry-utils | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-telemetry-utils | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-telemetry-utils | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-telemetry-utils | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-telemetry-utils | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
 
 - Controls for `doca-telemetry-utils`: temperature=not set (source=provider_default, forwarded=no); seed=not set (source=unset, forwarded=no); reasoning_effort=not set (source=provider_default, forwarded=no)
 
@@ -50,12 +50,12 @@ The three-tier evaluation checks whether the skill:
 
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 97.2% — baseline ran, but no comparable score was available; uplift unavailable | 93.8% — baseline ran, but no comparable score was available; uplift unavailable |
+| Overall | 95.8% — baseline ran, but no comparable score was available; uplift unavailable | 94.3% — baseline ran, but no comparable score was available; uplift unavailable |
 | Security | 100.0% → 100.0% (±0.0 points) | 100.0% → 100.0% (±0.0 points) |
-| Correctness | 55.0% → 100.0% (+45.0 points) | 50.0% → 100.0% (+50.0 points) |
+| Correctness | 50.0% → 95.0% (+45.0 points) | 45.0% → 100.0% (+55.0 points) |
 | Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
-| Effectiveness | 50.0% → 100.0% (+50.0 points) | 43.8% → 93.8% (+50.0 points) |
-| Efficiency | 86.2% — baseline ran, but no comparable score was available; uplift unavailable | 80.0% — baseline ran, but no comparable score was available; uplift unavailable |
+| Effectiveness | 50.0% → 100.0% (+50.0 points) | 62.5% → 100.0% (+37.5 points) |
+| Efficiency | 83.8% — baseline ran, but no comparable score was available; uplift unavailable | 76.3% — baseline ran, but no comparable score was available; uplift unavailable |
 
 **How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
 
@@ -70,9 +70,9 @@ Shared-source comparisons use the same signals and weights on both conditions. T
 | Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
 | --- | --- | --- | --- | --- |
 | claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| claude-code | Efficiency | Token-only comparison | 98.2% → 95.6% (-2.6 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| claude-code | Efficiency | Token-only comparison | 98.2% → 95.4% (-2.8 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 | codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| codex | Efficiency | Token-only comparison | 87.6% → 86.2% (-1.4 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Efficiency | Token-only comparison | 89.4% → 85.9% (-3.5 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 
 ## Token Usage
 
@@ -80,17 +80,17 @@ Actual Tier 3 execution usage is reported for every observed agent/case pair and
 
 | Agent | Dataset case | With skill | Without skill | Delta | Change | Coverage |
 |---|---|---:|---:|---:|---:|---|
-| claude-code | All cases | 642,163 | 395,353 | +246,810 | +62.43% | skill 4/4; base 4/4 |
-| claude-code | doca-telemetry-utils.explicit-positive.v1 | 200,176 | 107,890 | +92,286 | +85.54% | skill 1/1; base 1/1 |
-| claude-code | doca-telemetry-utils.implicit-positive.v1 | 203,191 | 72,115 | +131,076 | +181.76% | skill 1/1; base 1/1 |
-| claude-code | doca-telemetry-utils.implicit-positive.v2 | 201,544 | 108,354 | +93,190 | +86.01% | skill 1/1; base 1/1 |
-| claude-code | doca-telemetry-utils.negative.v1 | 37,252 | 106,994 | -69,742 | -65.18% | skill 1/1; base 1/1 |
-| codex | All cases | 373,437 | 196,919 | +176,518 | +89.64% | skill 4/4; base 4/4 |
-| codex | doca-telemetry-utils.explicit-positive.v1 | 116,455 | 81,277 | +35,178 | +43.28% | skill 1/1; base 1/1 |
-| codex | doca-telemetry-utils.implicit-positive.v1 | 111,663 | 13,477 | +98,186 | +728.54% | skill 1/1; base 1/1 |
-| codex | doca-telemetry-utils.implicit-positive.v2 | 92,669 | 70,805 | +21,864 | +30.88% | skill 1/1; base 1/1 |
-| codex | doca-telemetry-utils.negative.v1 | 52,650 | 31,360 | +21,290 | +67.89% | skill 1/1; base 1/1 |
-| ALL AGENTS | Dataset aggregate | 1,015,600 | 592,272 | +423,328 | +71.48% | skill 8/8; base 8/8 |
+| claude-code | All cases | 641,854 | 395,192 | +246,662 | +62.42% | skill 4/4; base 4/4 |
+| claude-code | doca-telemetry-utils.explicit-positive.v1 | 204,309 | 107,992 | +96,317 | +89.19% | skill 1/1; base 1/1 |
+| claude-code | doca-telemetry-utils.implicit-positive.v1 | 164,113 | 72,074 | +92,039 | +127.70% | skill 1/1; base 1/1 |
+| claude-code | doca-telemetry-utils.implicit-positive.v2 | 200,715 | 108,060 | +92,655 | +85.74% | skill 1/1; base 1/1 |
+| claude-code | doca-telemetry-utils.negative.v1 | 72,717 | 107,066 | -34,349 | -32.08% | skill 1/1; base 1/1 |
+| codex | All cases | 341,941 | 177,008 | +164,933 | +93.18% | skill 4/4; base 4/4 |
+| codex | doca-telemetry-utils.explicit-positive.v1 | 101,782 | 52,116 | +49,666 | +95.30% | skill 1/1; base 1/1 |
+| codex | doca-telemetry-utils.implicit-positive.v1 | 95,694 | 13,372 | +82,322 | +615.63% | skill 1/1; base 1/1 |
+| codex | doca-telemetry-utils.implicit-positive.v2 | 95,973 | 71,123 | +24,850 | +34.94% | skill 1/1; base 1/1 |
+| codex | doca-telemetry-utils.negative.v1 | 48,492 | 40,397 | +8,095 | +20.04% | skill 1/1; base 1/1 |
+| ALL AGENTS | Dataset aggregate | 983,795 | 572,200 | +411,595 | +71.93% | skill 8/8; base 8/8 |
 
 Prompt tokens include cached reads, so total tokens are `prompt + completion` (cached is not added twice). The Efficiency score uses `(prompt - cached) + completion`. Change is `100 * (with - without) / without`; negative means fewer tokens. N/A comparisons include their reason in the coverage column; coverage is never estimated.
 
@@ -107,7 +107,39 @@ Prompt tokens include cached reads, so total tokens are `prompt + completion` (c
 <details>
 <summary>Show detailed findings and successful checks</summary>
 
-- **CRITICAL** CONTENT_DEDUP/llm_error: LLM analysis failed for a content cluster (`skills/tools/doca-telemetry-utils`)
+- **HIGH** DUPLICATE/duplicate: Duplicate content found across CAPABILITIES.md and SKILL.md and TASKS.md:
+  "# DOCA Telemetry Utils — Capabilities" in CAPABILITIES.md (lines 1-24)
+  vs "## Pattern overview" in CAPABILITIES.md (lines 31-38)
+  vs "## Pattern overview" in CAPABILITIES.md (lines 41-55)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 62-69)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 72-76)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 94-95)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 136-141)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 142-151)
+  vs "## Version compatibility" in CAPABILITIES.md (lines 168-209)
+  vs "## Error taxonomy" in CAPABILITIES.md (lines 211-221)
+  vs "## Error taxonomy" in CAPABILITIES.md (lines 222-292)
+  vs "## Examples" in SKILL.md (lines 5-13)
+  vs "## Quick triage: the exporter ships, the collector sees nothing" in SKILL.md (lines 14-28)
+  vs "## Instructions" in SKILL.md (lines 29-72)
+  vs "## Example questions this skill answers well" in SKILL.md (lines 73-142)
+  vs "## When to load this skill" in SKILL.md (lines 143-176)
+  vs "## What this skill provides" in SKILL.md (lines 177-227)
+  vs "## Related skills" in SKILL.md (lines 277-328)
+  vs "# DOCA Telemetry Utils — Tasks" in TASKS.md (lines 1-27)
+  vs "## install" in TASKS.md (lines 28-78)
+  vs "## configure" in TASKS.md (lines 79-138)
+  vs "## build" in TASKS.md (lines 139-170)
+  vs "## run" in TASKS.md (lines 214-278)
+  vs "## test" in TASKS.md (lines 280-286)
+  vs "## test" in TASKS.md (lines 289-321)
+  vs "## test" in TASKS.md (lines 324-330)
+  vs "## debug" in TASKS.md (lines 355-414)
+  vs "## use" in TASKS.md (lines 415-452)
+  vs "## Deferred task verbs" in TASKS.md (lines 453-479)
+  vs "## Command appendix" in TASKS.md (lines 508-514)
+  vs "## Command appendix" in TASKS.md (lines 516-534)
+  vs "## Cross-cutting" in TASKS.md (lines 542-574) (`CAPABILITIES.md:1`)
 - **MEDIUM** QUALITY/quality_discoverability: Description uses first/second person (`skills/tools/doca-telemetry-utils/SKILL.md`)
 - **MEDIUM** SCHEMA/metadata_key_style: Metadata key 'doca_version' is not kebab-case (`skills/tools/doca-telemetry-utils/SKILL.md`)
 - **MEDIUM** SCHEMA/folder_hierarchy: Unexpected nesting depth for general skill (`skills/tools/doca-telemetry-utils`)

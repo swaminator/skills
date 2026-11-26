@@ -19,7 +19,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - compress
@@ -27,13 +27,15 @@ metadata:
 compatibility: >
   Requires DOCA SDK installed at /opt/mellanox/doca on Linux
   (Ubuntu 22.04/24.04 or RHEL/SLES) with a BlueField DPU or
-  ConnectX NIC attached. Reads the user's local install via
+  ConnectX NIC attached. On the user's DOCA host, reads the user's local install via
   `pkg-config doca-compress` and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}.
   The validation steps require a live DOCA install.
 ---
 
 # DOCA Compress
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -43,6 +45,10 @@ compatibility: >
 - **"Compress task returns INVALID_VALUE on alloc_init."** — size
   the `doca_buf` against the per-task cap query before changing
   the algorithm.
+- **"Offload bulk compression."** Lifecycle: `doca_compress_create` →
+  `doca_compress_task_compress_deflate_set_conf` and the source / destination
+  mmap permissions, both BEFORE `doca_ctx_start` → submit → `doca_pe_progress`
+  until the completion arrives → `doca_ctx_stop` → `doca_compress_destroy`.
 
 ## Instructions
 

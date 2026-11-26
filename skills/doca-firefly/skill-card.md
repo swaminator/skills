@@ -1,5 +1,5 @@
 ## Description: <br>
-Guides operators deploying and debugging the DOCA Firefly Service container on BlueField: choosing the four PTP configuration axes (role / profile / domain / interface), wiring the BlueField PHC to the host-side time follower and consumer workload, deciding whether PTP-grade time is needed versus chrony / NTP, and diagnosing deployments where PTP does not sync or the host clock does not follow. <br>
+Use this skill when the user is operating the DOCA Firefly Service container on BlueField — picking the four PTP configuration axes (role / profile / domain / interface), wiring the BlueField PHC + host follower + consumer workload pairing, deciding whether PTP-grade time is even needed (vs. chrony / NTP), or debugging a Firefly deployment where PTP isn't syncing or the host clock isn't following. <br>
 
 This skill is ready for commercial/non-commercial use. <br>
 
@@ -9,7 +9,7 @@ NVIDIA <br>
 ### License/Terms of Use: <br>
 Apache 2.0 AND CC-BY-4.0 <br>
 ## Use Case: <br>
-External operators and platform teams use this skill to deploy the DOCA Firefly Service container on BlueField Arm to provide PTP-grade time synchronization to time-sensitive workloads (Rivermax SMPTE ST 2110, 5G UPF, financial trading, distributed databases), including configuring PTP axes, wiring the host follower to the BlueField PHC, validating end-to-end discipline, and debugging sync failures. <br>
+External operators and platform teams who deploy the DOCA Firefly Service container on BlueField Arm use this skill to choose PTP role, profile, domain, and interface, wire the host-side time follower to the BlueField PHC, pair Firefly with time-sensitive workloads such as Rivermax SMPTE, and debug PTP sync, host-follower, or jitter problems. <br>
 
 ### Deployment Geography for Use: <br>
 Global <br>
@@ -31,10 +31,10 @@ Mitigation: Review and scan skill before deployment. <br>
 
 
 ## Skill Output: <br>
-**Output Type(s):** [Shell commands, Configuration instructions, Analysis] <br>
-**Output Format:** [Markdown with inline shell code blocks] <br>
+**Output Type(s):** [Analysis, Shell commands, Configuration instructions] <br>
+**Output Format:** [Markdown with inline bash code blocks] <br>
 **Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [No pre-baked Firefly configuration files, container image tags, or host-side chrony / ptp4l config bodies are shipped; configuration is derived from the public DOCA Firefly Service Guide] <br>
+**Other Properties Related to Output:** [None] <br>
 
 ## Evaluation Agents Used: <br>
 - Claude Code (`aws/anthropic/bedrock-claude-opus-5-5`) <br>
@@ -43,39 +43,60 @@ Mitigation: Review and scan skill before deployment. <br>
 
 
 ## Evaluation Tasks: <br>
-4 evaluation tasks (3 positive, 1 negative), one attempt per task, each attempt run in its own isolated k8s-sandbox pod. <br>
+4 evaluation tasks (3 positive, 1 negative), 1 attempt per task, each in its own isolated sandbox pod (`k8s-sandbox` environment); evaluator version `1.6.10`, evaluation date 2026-11-23. <br>
 
 ## Evaluation Metrics Used: <br>
 Reported benchmark dimensions: <br>
-- Security: Whether the skill is safe to use, checking for unsafe operations, secret leakage, and unauthorized access. <br>
-- Correctness: Whether the final answer is correct against the reference answer. <br>
-- Discoverability: Whether the right skill was loaded when needed and decoys were avoided. <br>
-- Effectiveness: Whether the skill helped complete the task, as the equal-weight mean of goal completion and expected workflow adherence. <br>
-- Efficiency: Whether the skill avoided wasted tool calls and token usage. <br>
+- Security: Is it safe to use? Scored from `security` (100%). <br>
+- Correctness: Is the answer correct? Scored from `accuracy` (100%). <br>
+- Discoverability: Was the right skill loaded when needed? Scored from `skill_execution` (100%). <br>
+- Effectiveness: Did the skill help complete the task? Scored from `goal_accuracy` (50%) + `behavior_check` (50%). <br>
+- Efficiency: Did it avoid wasted tool calls and token usage? Scored from `skill_efficiency` (50%) + `token_efficiency` (50%). <br>
 
 Underlying evaluation signals used in this run: <br>
-- `security`: Unsafe operations, secret leakage, and unauthorized access. <br>
-- `skill_execution`: Whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
-- `skill_efficiency`: Tool-call productivity (legacy wire id; routing is scored under Discoverability). <br>
-- `accuracy`: Final-answer correctness against the reference answer. <br>
-- `goal_accuracy`: Whether the user's goal was achieved. <br>
-- `behavior_check`: Whether the expected workflow behavior was followed. <br>
-- `token_efficiency`: Actual uncached prompt plus completion usage (50% of Efficiency). <br>
+- `security`: Security: unsafe operations, secret leakage, and unauthorized access. <br>
+- `skill_execution`: Skill Execution: whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
+- `skill_efficiency`: Tool Productivity: tool-call productivity (legacy wire id; routing is scored under Discoverability). <br>
+- `accuracy`: Accuracy: final-answer correctness against the reference answer. <br>
+- `goal_accuracy`: Goal Accuracy: whether the user's goal was achieved. <br>
+- `behavior_check`: Behavior Check: whether the expected workflow behavior was followed. <br>
+- `token_efficiency`: Token Efficiency: actual uncached prompt plus completion usage (50% of Efficiency). <br>
 
 
 
 ## Evaluation Results: <br>
+**Overall verdict: PASS — Recommended for publication**
+
+**Publication Recommendation:** Recommended for publication based on the completed evaluation evidence in this report.
+
+### Results at a Glance
+
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 93.4% — baseline ran, but no comparable score was available; uplift unavailable | 91.4% — baseline ran, but no comparable score was available; uplift unavailable |
+| Overall | 98.1% — baseline ran, but no comparable score was available; uplift unavailable | 90.0% — baseline ran, but no comparable score was available; uplift unavailable |
 | Security | 100.0% → 100.0% (±0.0 points) | 87.5% → 100.0% (+12.5 points) |
-| Correctness | 50.0% → 100.0% (+50.0 points) | 75.0% → 90.0% (+15.0 points) |
+| Correctness | 55.0% → 100.0% (+45.0 points) | 75.0% → 90.0% (+15.0 points) |
 | Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 93.3% — baseline ran, but no comparable score was available; uplift unavailable |
-| Effectiveness | 50.0% → 87.5% (+37.5 points) | 62.5% → 100.0% (+37.5 points) |
-| Efficiency | 79.6% — baseline ran, but no comparable score was available; uplift unavailable | 73.9% — baseline ran, but no comparable score was available; uplift unavailable |
+| Effectiveness | 50.0% → 100.0% (+50.0 points) | 81.3% → 93.8% (+12.5 points) |
+| Efficiency | 90.3% — baseline ran, but no comparable score was available; uplift unavailable | 72.9% — baseline ran, but no comparable score was available; uplift unavailable |
+
+**How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
+
+A partial dimension was calculated from only the available configured signals; review the detailed report before relying on it.
+
+#### Comparison details
+
+Shared-source comparisons use the same signals and weights on both conditions. They do not replace the full dimension scores above or change the publication verdict.
+
+| Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
+| --- | --- | --- | --- | --- |
+| claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| claude-code | Efficiency | Token-only comparison | 98.1% → 92.8% (-5.3 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| codex | Efficiency | Token-only comparison | 83.3% → 84.1% (+0.8 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 
 ## Skill Version(s): <br>
-c98e456 (source: git SHA, committed 2026-10-28) <br>
+444e267 (source: git SHA, committed 2026-11-23) <br>
 
 ## Ethical Considerations: <br>
 NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications. When downloaded or used in accordance with our terms of service, developers should work with their internal team to ensure this skill meets requirements for the relevant industry and use case and addresses unforeseen product misuse. <br>

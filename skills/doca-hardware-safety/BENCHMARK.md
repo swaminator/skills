@@ -10,8 +10,8 @@ Recommended for publication based on the completed evaluation evidence in this r
 
 - Skill: `doca-hardware-safety`
 - Validation status: `passed`
-- Evaluation date: 2026-10-28
-- Evaluator version: `1.6.2`
+- Evaluation date: 2026-11-23
+- Evaluator version: `1.6.10`
 - Agents: Claude Code (`aws/anthropic/bedrock-claude-opus-5-5`), Codex (`openai/openai/gpt-6.1-sol`)
 - Tasks: 4 evaluation tasks (3 positive, 1 negative)
 - Dataset digest: `sha256:92ada66ba25e4a14374052c645b38d751d26dab43422e376d5b5bf9034dc939b` (skill-evaluator-dataset-snapshot/1)
@@ -28,11 +28,11 @@ SkillSpector provider, model, analyzer revision, and determinism evidence retain
 
 | Skill | Provider | Adapter | Analyzer | Model | Revision | Determinism |
 | --- | --- | --- | --- | --- | --- | --- |
-| doca-hardware-safety | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-hardware-safety | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-hardware-safety | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-hardware-safety | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-hardware-safety | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
+| doca-hardware-safety | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-hardware-safety | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-hardware-safety | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-hardware-safety | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-hardware-safety | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
 
 - Controls for `doca-hardware-safety`: temperature=not set (source=provider_default, forwarded=no); seed=not set (source=unset, forwarded=no); reasoning_effort=not set (source=provider_default, forwarded=no)
 
@@ -50,12 +50,12 @@ The three-tier evaluation checks whether the skill:
 
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 96.4% — baseline ran, but no comparable score was available; uplift unavailable | 83.9% — baseline ran, but no comparable score was available; uplift unavailable |
+| Overall | 96.2% — baseline ran, but no comparable score was available; uplift unavailable | 84.2% — baseline ran, but no comparable score was available; uplift unavailable |
 | Security | 100.0% → 100.0% (±0.0 points) | 100.0% → 100.0% (±0.0 points) |
-| Correctness | 55.0% → 95.0% (+40.0 points) | 50.0% → 75.0% (+25.0 points) |
+| Correctness | 50.0% → 95.0% (+45.0 points) | 55.0% → 75.0% (+20.0 points) |
 | Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
 | Effectiveness | 39.6% → 93.8% (+54.2 points) | 68.8% → 81.3% (+12.5 points) |
-| Efficiency | 93.3% — baseline ran, but no comparable score was available; uplift unavailable | 68.4% — baseline ran, but no comparable score was available; uplift unavailable |
+| Efficiency | 92.4% — baseline ran, but no comparable score was available; uplift unavailable | 69.8% — baseline ran, but no comparable score was available; uplift unavailable |
 
 **How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
 
@@ -70,9 +70,9 @@ Shared-source comparisons use the same signals and weights on both conditions. T
 | Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
 | --- | --- | --- | --- | --- |
 | claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| claude-code | Efficiency | Token-only comparison | 97.5% → 95.0% (-2.5 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| claude-code | Efficiency | Token-only comparison | 97.5% → 96.0% (-1.5 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 | codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| codex | Efficiency | Token-only comparison | 88.6% → 85.8% (-2.8 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Efficiency | Token-only comparison | 88.0% → 86.4% (-1.6 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 
 ## Token Usage
 
@@ -80,17 +80,17 @@ Actual Tier 3 execution usage is reported for every observed agent/case pair and
 
 | Agent | Dataset case | With skill | Without skill | Delta | Change | Coverage |
 |---|---|---:|---:|---:|---:|---|
-| claude-code | All cases | 516,487 | 481,858 | +34,629 | +7.19% | skill 4/4; base 4/4 |
-| claude-code | doca-hardware-safety.explicit-positive.v1 | 78,373 | 36,558 | +41,815 | +114.38% | skill 1/1; base 1/1 |
-| claude-code | doca-hardware-safety.implicit-positive.v1 | 78,293 | 72,073 | +6,220 | +8.63% | skill 1/1; base 1/1 |
-| claude-code | doca-hardware-safety.implicit-positive.v2 | 212,450 | 109,211 | +103,239 | +94.53% | skill 1/1; base 1/1 |
-| claude-code | doca-hardware-safety.negative.v1 | 147,371 | 264,016 | -116,645 | -44.18% | skill 1/1; base 1/1 |
-| codex | All cases | 278,154 | 105,156 | +172,998 | +164.52% | skill 4/4; base 4/4 |
-| codex | doca-hardware-safety.explicit-positive.v1 | 90,702 | 39,259 | +51,443 | +131.03% | skill 1/1; base 1/1 |
-| codex | doca-hardware-safety.implicit-positive.v1 | 96,011 | 30,830 | +65,181 | +211.42% | skill 1/1; base 1/1 |
-| codex | doca-hardware-safety.implicit-positive.v2 | 77,964 | 21,838 | +56,126 | +257.01% | skill 1/1; base 1/1 |
-| codex | doca-hardware-safety.negative.v1 | 13,477 | 13,229 | +248 | +1.87% | skill 1/1; base 1/1 |
-| ALL AGENTS | Dataset aggregate | 794,641 | 587,014 | +207,627 | +35.37% | skill 8/8; base 8/8 |
+| claude-code | All cases | 358,356 | 443,258 | -84,902 | -19.15% | skill 4/4; base 4/4 |
+| claude-code | doca-hardware-safety.explicit-positive.v1 | 79,161 | 36,841 | +42,320 | +114.87% | skill 1/1; base 1/1 |
+| claude-code | doca-hardware-safety.implicit-positive.v1 | 79,052 | 72,163 | +6,889 | +9.55% | skill 1/1; base 1/1 |
+| claude-code | doca-hardware-safety.implicit-positive.v2 | 164,180 | 109,014 | +55,166 | +50.60% | skill 1/1; base 1/1 |
+| claude-code | doca-hardware-safety.negative.v1 | 35,963 | 225,240 | -189,277 | -84.03% | skill 1/1; base 1/1 |
+| codex | All cases | 291,176 | 110,363 | +180,813 | +163.83% | skill 4/4; base 4/4 |
+| codex | doca-hardware-safety.explicit-positive.v1 | 87,619 | 36,027 | +51,592 | +143.20% | skill 1/1; base 1/1 |
+| codex | doca-hardware-safety.implicit-positive.v1 | 89,585 | 30,969 | +58,616 | +189.27% | skill 1/1; base 1/1 |
+| codex | doca-hardware-safety.implicit-positive.v2 | 100,517 | 30,159 | +70,358 | +233.29% | skill 1/1; base 1/1 |
+| codex | doca-hardware-safety.negative.v1 | 13,455 | 13,208 | +247 | +1.87% | skill 1/1; base 1/1 |
+| ALL AGENTS | Dataset aggregate | 649,532 | 553,621 | +95,911 | +17.32% | skill 8/8; base 8/8 |
 
 Prompt tokens include cached reads, so total tokens are `prompt + completion` (cached is not added twice). The Efficiency score uses `(prompt - cached) + completion`. Change is `100 * (with - without) / without`; negative means fewer tokens. N/A comparisons include their reason in the coverage column; coverage is never estimated.
 

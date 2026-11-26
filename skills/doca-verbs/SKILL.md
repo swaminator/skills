@@ -16,7 +16,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - verbs
@@ -24,7 +24,7 @@ metadata:
 compatibility: >
   Requires DOCA SDK installed at /opt/mellanox/doca on Linux (Ubuntu
   22.04/24.04 or RHEL/SLES) with a BlueField DPU or ConnectX NIC attached.
-  Reads the local install via `pkg-config doca-verbs` (experimental ABI
+  On the user's DOCA host, reads the local install via `pkg-config doca-verbs` (experimental ABI
   tier — symbols may shift between releases) and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}. The verbs
   headers (doca_verbs.h + doca_verbs_*.h family) are the authoritative
@@ -33,8 +33,25 @@ compatibility: >
 
 # DOCA Verbs
 
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
+
 ## Examples
 
+- **"I need raw verbs below DOCA RDMA."** Answer in this order:
+  1. First question whether `doca-rdma` already covers the case (the path
+     selection rule below); the most common mistake is dropping to raw verbs
+     unnecessarily. Only a raw QP / CQ / WR / SRQ / Address-Handle attribute
+     need justifies `doca-verbs`.
+  2. Versions: `pkg-config --modversion doca-verbs` must match `doca_caps
+     --version` and `pkg-config --modversion doca-common`; the whole
+     `doca_verbs_*` ABI is EXPERIMENTAL on this release, so pin it.
+  3. Completions have three paths: the progress engine (`doca_pe_progress`),
+     manual CQ polling (`doca_verbs_bridge_poll_cq`), or a completion channel
+     (`doca_verbs_comp_channel_create`, `doca_verbs_get_cq_event`,
+     `doca_verbs_ack_cq_events`).
+  4. `DOCA_ERROR_IO_FAILED` means the submit succeeded but the completion
+     reports an error: read the CQE error field after draining the CQ, not the
+     submit return.
 - **"Should I use doca-verbs or doca-rdma?"** — ordinary RDMA data
   movement with no raw QP / CQ / WR / SRQ / Address-Handle attribute
   named is out of scope — route to

@@ -17,7 +17,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: knowledge
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - documentation
@@ -29,6 +29,8 @@ compatibility: >
 ---
 
 # DOCA Public Knowledge Map
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 **Where to start:** Reach for this skill whenever the question is "where does
 the authoritative answer live?" — a docs page, the on-disk install layout, a
@@ -81,6 +83,10 @@ sample without first having the answers to questions 1–3** (question 4 is
 needed for the first-app workflow but not for orientation itself). Pure
 documentation lookups — a URL, API reference, sample location, version
 reference, or stale-link recovery — skip this gate and route directly.
+A *"what is the latest NGC tag"* question is such a lookup: answer it with
+`doca-setup`'s tag rule (catalog Tags page, tag shape, architecture and
+host/BlueField target, `pkg-config --modversion doca-common` inside the
+pulled container), not with this gate.
 If the user cannot or will not answer a required question, state which
 environment-dependent recommendation cannot be made, give only the safe
 version-agnostic umbrella documentation route, and do not guess the missing
@@ -103,7 +109,7 @@ When the user asks something, route as follows:
 | "Which package gives me library X?" | Installation Guide section on package matrix; then verify on the user's system with `pkg-config --list-all`. |
 | "Show me a sample that uses library X." | `/opt/mellanox/doca/samples/doca_<X>/` if installed; otherwise the per-library guide on `docs.nvidia.com/doca/sdk/` (each library guide documents the samples shipped with it). |
 | "How do I build a DOCA sample?" | Library guide + the sample's own `meson.build` inside `/opt/mellanox/doca/samples/...`. |
-| "What is the API for X?" | Library guide; confirm by inspecting headers under `$(pkg-config --variable=includedir doca-common)` (commonly `/opt/mellanox/doca/include/` on DOCA 3.3+; `/opt/mellanox/doca/infrastructure/include/` on legacy / split-profile installs). |
+| "What is the API for X?" | Library guide; confirm by inspecting headers under `$(pkg-config --variable=includedir doca-common)` (commonly `/opt/mellanox/doca/include/`). |
 | "Why does my build fail with `pkg-config` not finding `doca-...`?" | "Layout of an installed DOCA package" (`PKG_CONFIG_PATH`), then load `doca-setup/SKILL.md` for environment preparation and debugging; do not silently mutate the environment. |
 | "What is the latest version / what changed?" | Release Notes. |
 | "Is there a newer DOCA — should I upgrade / downgrade / roll back?" | `doca-upgrade/SKILL.md` for the detect → report → ASK → guided-upgrade discipline (never auto-upgrade); Release Notes for what the target release contains. |

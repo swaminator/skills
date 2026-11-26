@@ -20,7 +20,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - comch
@@ -29,7 +29,7 @@ compatibility: >
   Requires DOCA SDK installed at /opt/mellanox/doca on Linux
   (Ubuntu 22.04/24.04 or RHEL/SLES) on a host + BlueField pair
   (the Comch channel runs over the RoCE/IB protocol, not the
-  TCP/IP stack). Reads the user's
+  TCP/IP stack). On the user's DOCA host, reads the user's
   local install via `pkg-config doca-comch` (legacy
   `doca-comm-channel` on installs <2.5) and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}.
@@ -38,8 +38,15 @@ compatibility: >
 
 # DOCA Comch
 
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
+
 ## Examples
 
+- **Any configure, build, run or test answer starts with the version.**
+  Run `pkg-config --modversion doca-comch` and check it against
+  `doca_caps --version` (the doca-version four-way match) before claiming
+  any feature is available; then the device capability query on the
+  active `doca_devinfo` is the runtime authority.
 - **"Send a control message from host to BlueField over PCIe."** —
   this is in scope. Pick server (DPU) vs client (host) and stay
   on the Comch send/recv path; do not fall back to TCP.
@@ -151,7 +158,8 @@ in any language. Concretely:
 - Configuring at least one of: a recv callback for slow-path
   messages, a producer for fast-path outbound data, a consumer for
   fast-path inbound data, before `doca_ctx_start()`.
-- Reading or setting comch properties via `doca_comch_set_*` and
+- Reading or setting comch properties via `doca_comch_server_set_*` /
+  `doca_comch_client_set_*` and
   `doca_comch_cap_get_*` — max message size, max number of
   clients (server side), producer / consumer queue sizing.
 - Establishing a connection between the two sides and reacting to

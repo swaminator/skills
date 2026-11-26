@@ -17,7 +17,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - sha
@@ -25,15 +25,27 @@ metadata:
 compatibility: >
   Requires DOCA SDK installed at /opt/mellanox/doca on Linux (Ubuntu
   22.04/24.04 or RHEL/SLES) with a BlueField-2 DPU attached
-  (BlueField-3 has no SHA engine). Reads the user's local install via `pkg-config doca-sha` and inspects
+  (BlueField-3 has no SHA engine). On the user's DOCA host, reads the user's local install via `pkg-config doca-sha` and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}.
   The validation steps require a live DOCA install.
 ---
 
 # DOCA SHA
 
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
+
 ## Examples
 
+- **"SHA-256 a file with the DOCA SHA accelerator."** Answer shape, in
+  this order:
+  1. Lifecycle: `doca_sha_create` → configure (`doca_sha_task_hash_set_conf`
+     and the source / destination mmap permissions, both BEFORE
+     `doca_ctx_start`) → `doca_ctx_start` → submit → `doca_pe_progress` until
+     the completion arrives → `doca_ctx_stop` → `doca_sha_destroy`.
+  2. Task shape: one-shot `doca_sha_task_hash` when the input fits in one
+     buffer (a 1 MiB file normally does); `doca_sha_task_partial_hash` when
+     the input is larger than `doca_sha_cap_get_max_src_buf_size` or arrives
+     in chunks. Check that cap on the active `doca_devinfo` first.
 - **"Offload SHA-256 to the BlueField."** — this is in scope. Use the
   shipped SHA sample and `doca_sha_cap_*` before picking SHA-1 /
   SHA-256 / SHA-512.

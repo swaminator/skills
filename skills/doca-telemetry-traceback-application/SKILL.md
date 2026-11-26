@@ -20,7 +20,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: tool
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - telemetry
@@ -36,6 +36,8 @@ compatibility: >
 ---
 
 # DOCA Telemetry Traceback Application
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Scope boundaries
 

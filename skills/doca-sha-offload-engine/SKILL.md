@@ -20,7 +20,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: tool
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - sha
@@ -38,6 +38,8 @@ compatibility: >
 ---
 
 # DOCA SHA Offload Engine
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -149,7 +151,7 @@ is one instance.
   will the engine still load?”*. Answered by the version
   overlay in
   the capabilities companion
-  (verified surface: the engine is documented for
+  (documented surface: the engine is documented for
   OpenSSL 1.1.1f on Ubuntu 20.04 and OpenSSL 3.0.2 on
   Ubuntu 22.04 per the shipped `engine_readme.md`).
 

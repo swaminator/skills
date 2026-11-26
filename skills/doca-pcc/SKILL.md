@@ -21,7 +21,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - pcc
@@ -31,13 +31,15 @@ compatibility: >
   22.04/24.04 or RHEL/SLES) with a BlueField DPU whose DPA processor is
   exposed to the host AND whose firmware has the custom-PCC slot
   enabled. Also requires the DPACC compiler installed at a version
-  matched to DOCA per the DOCA Compatibility Policy. Reads the user's
-  local install via `pkg-config doca-pcc` and inspects
+  matched to DOCA per the DOCA Compatibility Policy. On the DOCA host, reads the
+  install via `pkg-config doca-pcc` and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}. The validation
   steps require a live DOCA install.
 ---
 
 # DOCA PCC
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -240,8 +242,8 @@ contain — and pull requests should not add:
 
 - **Pre-written DOCA PCC application source code or DPA-side
   algorithm source, in any language.** The verified PCC source
-  is the shipped C + DPA-side samples at
-  `/opt/mellanox/doca/samples/doca_pcc/`. The agent's job is to
+  is the shipped C + DPA-side reference application at
+  `/opt/mellanox/doca/applications/pcc/`. The agent's job is to
   route the user to those files and prescribe a minimum-diff
   modification on them via the universal modify-a-sample
   workflow in

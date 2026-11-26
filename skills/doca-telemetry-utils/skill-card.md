@@ -1,5 +1,5 @@
 ## Description: <br>
-Guides agents to use the doca_telemetry_utils command line on a host with DOCA to discover the diagnostic-counter schema, translate counter names to binary Data IDs and back, and check per-device counter support before committing a DOCA Telemetry exporter config, while routing exporter or collector code, DTS deployment, and DOCA install or repair questions to the appropriate sibling skills. <br>
+Guides use of the doca_telemetry_utils command line on a host with DOCA to discover the diagnostic-counter schema, translate counter names to binary Data IDs and back, and check per-device counter support before committing a DOCA Telemetry exporter config. <br>
 
 This skill is ready for commercial/non-commercial use. <br>
 
@@ -9,7 +9,7 @@ NVIDIA <br>
 ### License/Terms of Use: <br>
 Apache 2.0 AND CC-BY-4.0 <br>
 ## Use Case: <br>
-Platform operators, DOCA Telemetry exporter and collector developers, and AI agents use this skill to enumerate the counters a BlueField exposes, resolve and reverse-resolve Data IDs, validate per-device counter support before writing an exporter config, and triage reports where the exporter ships but the collector receives nothing. <br>
+Developers, operators, and engineers working with NVIDIA DOCA use this skill to enumerate BlueField diagnostic counters, translate counter names to Data IDs and back, and validate per-device counter support when debugging DOCA Telemetry exporter/collector pipelines where metrics silently drop. <br>
 
 ### Deployment Geography for Use: <br>
 Global <br>
@@ -27,12 +27,12 @@ Mitigation: Review and scan skill before deployment. <br>
 ## Reference(s): <br>
 - [CAPABILITIES.md](CAPABILITIES.md) <br>
 - [TASKS.md](TASKS.md) <br>
-- [DOCA SDK Documentation](https://docs.nvidia.com/doca/sdk/index.html) <br>
+- [NVIDIA DOCA SDK Documentation](https://docs.nvidia.com/doca/sdk/index.html) <br>
 
 
 ## Skill Output: <br>
-**Output Type(s):** [Analysis, Shell commands, Configuration instructions] <br>
-**Output Format:** [Markdown with inline shell command citations] <br>
+**Output Type(s):** [Shell commands, Analysis, Configuration instructions] <br>
+**Output Format:** [Markdown with inline bash code blocks] <br>
 **Output Parameters:** [1D] <br>
 **Other Properties Related to Output:** [None] <br>
 
@@ -43,39 +43,64 @@ Mitigation: Review and scan skill before deployment. <br>
 
 
 ## Evaluation Tasks: <br>
-4 evaluation tasks (3 positive, 1 negative); each task attempt ran in its own isolated k8s-sandbox pod with one attempt per task. <br>
+4 evaluation tasks (3 positive, 1 negative); 1 attempt per task, each in its own isolated sandbox pod (`k8s-sandbox`), with a no-skill baseline for comparison. <br>
 
 ## Evaluation Metrics Used: <br>
 Reported benchmark dimensions: <br>
-- Security: Is it safe to use? Checks for unsafe operations, secret leakage, and unauthorized access. <br>
-- Correctness: Is the answer correct against the reference answer? <br>
-- Discoverability: Was the right skill loaded when needed, with decoys avoided? <br>
-- Effectiveness: Did the skill help complete the task, measured as the equal-weight mean of goal completion and expected workflow adherence? <br>
-- Efficiency: Did it avoid wasted tool calls and token usage, measured as equal-weight tool-call productivity and token efficiency? <br>
+- Security: Is it safe to use? Scored from `security` (100%). <br>
+- Correctness: Is the answer correct? Scored from `accuracy` (100%). <br>
+- Discoverability: Was the right skill loaded when needed? Scored from `skill_execution` (100%). <br>
+- Effectiveness: Did the skill help complete the task? Scored from `goal_accuracy` (50%) + `behavior_check` (50%). <br>
+- Efficiency: Did it avoid wasted tool calls and token usage? Scored from `skill_efficiency` (50%) + `token_efficiency` (50%). <br>
 
 Underlying evaluation signals used in this run: <br>
-- `security`: Unsafe operations, secret leakage, and unauthorized access. <br>
-- `skill_execution`: Whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
-- `skill_efficiency`: Tool-call productivity (legacy wire id; routing is scored under Discoverability). <br>
-- `accuracy`: Final-answer correctness against the reference answer. <br>
-- `goal_accuracy`: Whether the user's goal was achieved. <br>
-- `behavior_check`: Whether the expected workflow behavior was followed. <br>
-- `token_efficiency`: Actual uncached prompt plus completion token usage (50% of Efficiency). <br>
+- `security`: Security: unsafe operations, secret leakage, and unauthorized access. <br>
+- `skill_execution`: Skill Execution: whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
+- `skill_efficiency`: Tool Productivity: tool-call productivity (legacy wire id; routing is scored under Discoverability). <br>
+- `accuracy`: Accuracy: final-answer correctness against the reference answer. <br>
+- `goal_accuracy`: Goal Accuracy: whether the user's goal was achieved. <br>
+- `behavior_check`: Behavior Check: whether the expected workflow behavior was followed. <br>
+- `token_efficiency`: Token Efficiency: actual uncached prompt plus completion usage (50% of Efficiency). <br>
 
 
 
 ## Evaluation Results: <br>
+> ✅ **Overall verdict: PASS — Recommended for publication**
+
+### Publication Recommendation
+
+Recommended for publication based on the completed evaluation evidence in this report.
+
+### Results at a Glance
+
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 97.2% (uplift unavailable) | 93.8% (uplift unavailable) |
+| Overall | 95.8% — baseline ran, but no comparable score was available; uplift unavailable | 94.3% — baseline ran, but no comparable score was available; uplift unavailable |
 | Security | 100.0% → 100.0% (±0.0 points) | 100.0% → 100.0% (±0.0 points) |
-| Correctness | 55.0% → 100.0% (+45.0 points) | 50.0% → 100.0% (+50.0 points) |
-| Discoverability | 100.0% (uplift unavailable) | 95.0% (uplift unavailable) |
-| Effectiveness | 50.0% → 100.0% (+50.0 points) | 43.8% → 93.8% (+50.0 points) |
-| Efficiency | 86.2% (uplift unavailable) | 80.0% (uplift unavailable) |
+| Correctness | 50.0% → 95.0% (+45.0 points) | 45.0% → 100.0% (+55.0 points) |
+| Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
+| Effectiveness | 50.0% → 100.0% (+50.0 points) | 62.5% → 100.0% (+37.5 points) |
+| Efficiency | 83.8% — baseline ran, but no comparable score was available; uplift unavailable | 76.3% — baseline ran, but no comparable score was available; uplift unavailable |
+
+**How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
+
+Example: `47.0% → 92.0% (+45.0 points)` means the skill-assisted run scored 92.0%, 45.0 percentage points above its 47.0% no-skill baseline.
+
+A partial dimension was calculated from only the available configured signals; review the detailed report before relying on it.
+
+### Comparison details
+
+Shared-source comparisons use the same signals and weights on both conditions. They do not replace the full dimension scores above or change the publication verdict.
+
+| Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
+| --- | --- | --- | --- | --- |
+| claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| claude-code | Efficiency | Token-only comparison | 98.2% → 95.4% (-2.8 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| codex | Efficiency | Token-only comparison | 89.4% → 85.9% (-3.5 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 
 ## Skill Version(s): <br>
-c98e456 (source: git SHA, committed 2026-10-28) <br>
+444e267 (source: git SHA, committed 2026-11-23) <br>
 
 ## Ethical Considerations: <br>
 NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications. When downloaded or used in accordance with our terms of service, developers should work with their internal team to ensure this skill meets requirements for the relevant industry and use case and addresses unforeseen product misuse. <br>

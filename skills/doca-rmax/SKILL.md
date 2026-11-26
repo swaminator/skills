@@ -19,7 +19,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - rmax
@@ -36,8 +36,15 @@ compatibility: >
 
 # DOCA Rivermax
 
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
+
 ## Examples
 
+- **Any configure, build, run or test answer starts with the version.**
+  Run `pkg-config --modversion doca-rmax` and check it against
+  `doca_caps --version` (the doca-version four-way match) before claiming
+  any feature is available; the Rivermax SDK version is a second axis on its own schedule; then the device capability query on the
+  active `doca_devinfo` is the runtime authority.
 - **"ST 2110 receive isn't getting frames."** — this is in
   scope after Rivermax SDK + license are already present.
 - **"How do I obtain / install the Rivermax SDK and its license?"** —
@@ -49,6 +56,11 @@ compatibility: >
 - **"NOT_SUPPORTED from doca_rmax_init."** — run the
   `doca_rmax_get_*_supported` queries before changing stream
   setup.
+- **"Which version and capabilities apply to my Rivermax stream?"** Two
+  version axes: `pkg-config --modversion doca-rmax` checked against
+  `doca_caps --version`, and the Rivermax SDK version, which ships on its
+  own schedule. The device-side `doca_rmax` capability queries on the active
+  `doca_devinfo` decide what the stream can use.
 
 ## Instructions
 

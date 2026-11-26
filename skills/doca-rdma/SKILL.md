@@ -20,7 +20,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - rdma
@@ -37,6 +37,8 @@ compatibility: >
 
 # DOCA RDMA
 
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
+
 ## Examples
 
 - **"Completions never arrive after submit."** — stay on the DOCA
@@ -44,6 +46,13 @@ compatibility: >
 - **"One-sided read returns permission denied."** — check mmap +
   RDMA permissions and `doca_rdma_cap_*` before changing the task
   type.
+- **"Set up an RDMA context for one-sided Read / Write."** Lifecycle in
+  order: create → configure (`doca_rdma_task_*_set_conf`, the mmap
+  permissions, optional setters) → `doca_ctx_start` → connect → use → stop
+  → `doca_rdma_destroy`; task configuration and permissions MUST precede
+  `doca_ctx_start`. First functional test: a two-sided Send + Receive pair,
+  which proves the connection and two-sided permissions before adding the
+  one-sided Read / Write permissions.
 
 ## Instructions
 
@@ -79,7 +88,7 @@ name, `PKG_CONFIG_PATH`, sample path) — do not silently fall back to
 verbs. A binary whose `ldd` shows no `libdoca_rdma` is a failed
 DOCA-RDMA task, regardless of whether bytes moved.
 
-Concrete path (verified on DOCA 3.3, one RoCE port, two processes):
+Concrete path (DOCA 3.3+):
 
 0. **Record the installed version first:** run
    `pkg-config --modversion doca-rdma` and show the result.

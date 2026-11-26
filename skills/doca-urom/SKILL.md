@@ -19,7 +19,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - urom
@@ -35,6 +35,8 @@ compatibility: >
 ---
 
 # DOCA UROM
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -71,7 +73,7 @@ executor**; they are a paired contract.
 **How to use this skill.** Read this file, then search the companion file
 for the `## <name>` heading the question needs and read that whole section.
 Answer completely from it, quoting only its symbols and commands. Do not
-browse docs; use the entry points in `doca-public-knowledge-map`. For
+search the web or browse docs freely; when a step says to quote from the live guide, take that guide's URL from `doca-public-knowledge-map` and read only that page. For
 out-of-scope requests, name the skill that owns them and stop.
 
 ## Example questions this skill answers well

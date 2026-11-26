@@ -21,7 +21,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - aes-gcm
@@ -29,7 +29,7 @@ metadata:
 compatibility: >
   Requires DOCA SDK installed at /opt/mellanox/doca on Linux
   (Ubuntu 22.04/24.04 or RHEL/SLES) with a BlueField DPU or
-  ConnectX NIC attached. Reads the local install via
+  ConnectX NIC attached. On the user's DOCA host, reads the local install via
   `pkg-config doca-aes-gcm` and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}.
   Only `DOCA_AES_GCM_KEY_128` / `_256` are supported (not AES-192).
@@ -37,6 +37,8 @@ compatibility: >
 ---
 
 # DOCA AES-GCM
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -186,7 +188,8 @@ in any language. Concretely:
   takes key + IV + AAD + plaintext, produces ciphertext + auth
   tag) and **decrypt** (`doca_aes_gcm_task_decrypt` — takes key +
   IV + AAD + ciphertext + expected auth tag, produces plaintext
-  *and verifies the tag*) for the user's data shape.
+  *and verifies the tag*) for the user's data shape. Every encrypt
+  under one key needs a unique IV; never reuse a (key, IV) pair.
 - Setting permissions on `doca_mmap` correctly for the source buffer
   (`DOCA_ACCESS_FLAG_LOCAL_READ_ONLY` at minimum — the plaintext on
   encrypt or the ciphertext on decrypt) and the destination buffer
@@ -346,6 +349,7 @@ installed package layout" rather than "AES-GCM-specific guidance".
   user is comparing offload paths between the two.
 - `doca-debug/SKILL.md` — the cross-cutting
   debug ladder (install / version / build / link / runtime /
-  program / driver). AES-GCM-specific debug (key-size-not-supported,
-  oversized input, tag-verification failure on decrypt) overlays on
-  top of that ladder.
+  program / driver). A tag-verification failure on decrypt is handled
+  first as a security event, never walked through the ladder; other
+  AES-GCM errors (key-size-not-supported, oversized input) are
+  disambiguated in the error taxonomy before falling back to the ladder.

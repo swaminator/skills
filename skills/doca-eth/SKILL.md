@@ -21,7 +21,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - ethernet
@@ -29,7 +29,7 @@ metadata:
 compatibility: >
   Requires DOCA SDK installed at /opt/mellanox/doca on Linux
   (Ubuntu 22.04/24.04 or RHEL/SLES) with a BlueField DPU or
-  ConnectX NIC attached. Reads the user's local install via
+  ConnectX NIC attached. On the user's DOCA host, reads the user's local install via
   `pkg-config doca-eth` and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}.
   The validation steps require a live DOCA install.
@@ -37,12 +37,27 @@ compatibility: >
 
 # DOCA Ethernet
 
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
+
 ## Examples
 
+- **Any configure, build, run or test answer starts with the version.**
+  Run `pkg-config --modversion doca-eth` and check it against
+  `doca_caps --version` (the doca-version four-way match) before claiming
+  any feature is available; then the device capability query on the
+  active `doca_devinfo` is the runtime authority.
 - **"My RX queue is up but no packets arrive."** — RX and TX are two
   Core contexts; one `doca_ctx_start()` does not cover both.
 - **"Send-task returns AGAIN at line rate."** — size burst against
   the `_cap_*` queries before changing queue type.
+- **"Is this RX type / offload available on my install, and how do I smoke it?"**
+  First the version: `pkg-config --modversion doca-eth` must match
+  `doca_caps --version` (doca-version four-way match); then the device cap
+  on the active `doca_devinfo` (`doca_eth_rxq_cap_is_type_supported`,
+  `doca_eth_txq_cap_is_l3_checksum_offload_supported`) is the runtime
+  authority. Smoke one packet before scale: one TX, returned by a loopback
+  or external echo, one RX completion. The RX queue only receives what a
+  doca-flow rule steers to it.
 
 ## Instructions
 
@@ -59,8 +74,10 @@ is *what can a DOCA Ethernet queue express* on this version. If
 the user has not installed DOCA yet, route to
 `doca-setup/SKILL.md` first. **RX and TX are
 independent Core contexts.** A `doca_eth_rxq` and a `doca_eth_txq`
-each get their own `doca_ctx_create` / `_start` / `_stop` /
-`_destroy`; one `doca_ctx_start()` does **not** start both sides.
+each get their own lifecycle (`doca_eth_rxq_create` / `doca_eth_txq_create`,
+`doca_ctx_start` / `doca_ctx_stop` on its context, then
+`doca_eth_rxq_destroy` / `doca_eth_txq_destroy`); one `doca_ctx_start()`
+does **not** start both sides.
 Do not walk a single lifecycle for "the queue pair". If the user is
 asking *"how do I get packets to land on my RX queue at all"*, the
 answer lives in `doca-flow/SKILL.md` — DOCA
@@ -110,7 +127,7 @@ instance.
 - **"Is this Ethernet capability available on my device + my
   installed DOCA?"** — worked example: *"does this device
   advertise L3 checksum offload"*. Answered by the
-  capability-query rule (`doca_eth_txq_cap_is_l3_chksum_offload_supported`
+  capability-query rule (`doca_eth_txq_cap_is_l3_checksum_offload_supported`
   against a `doca_devinfo`) in
   ## Capabilities and modes
   + the version-and-device overlay in

@@ -10,8 +10,8 @@ Recommended for publication based on the completed evaluation evidence in this r
 
 - Skill: `doca-bench`
 - Validation status: `passed`
-- Evaluation date: 2026-10-28
-- Evaluator version: `1.6.2`
+- Evaluation date: 2026-11-23
+- Evaluator version: `1.6.10`
 - Agents: Claude Code (`aws/anthropic/bedrock-claude-opus-5-5`), Codex (`openai/openai/gpt-6.1-sol`)
 - Tasks: 4 evaluation tasks (3 positive, 1 negative)
 - Dataset digest: `sha256:c8caeb0eb027b18e240f06abd2295f53cb9f30120d1302bb2211d124dfc623fc` (skill-evaluator-dataset-snapshot/1)
@@ -28,11 +28,11 @@ SkillSpector provider, model, analyzer revision, and determinism evidence retain
 
 | Skill | Provider | Adapter | Analyzer | Model | Revision | Determinism |
 | --- | --- | --- | --- | --- | --- | --- |
-| doca-bench | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-bench | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-bench | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-bench | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-bench | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
+| doca-bench | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-bench | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-bench | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-bench | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-bench | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
 
 - Controls for `doca-bench`: temperature=not set (source=provider_default, forwarded=no); seed=not set (source=unset, forwarded=no); reasoning_effort=not set (source=provider_default, forwarded=no)
 
@@ -50,12 +50,12 @@ The three-tier evaluation checks whether the skill:
 
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 95.5% — baseline ran, but no comparable score was available; uplift unavailable | 93.2% — baseline ran, but no comparable score was available; uplift unavailable |
-| Security | 100.0% → 100.0% (±0.0 points) | 100.0% → 100.0% (±0.0 points) |
-| Correctness | 65.0% → 100.0% (+35.0 points) | 85.0% → 100.0% (+15.0 points) |
+| Overall | 97.2% — baseline ran, but no comparable score was available; uplift unavailable | 92.3% — baseline ran, but no comparable score was available; uplift unavailable |
+| Security | 100.0% → 100.0% (±0.0 points) | 87.5% → 100.0% (+12.5 points) |
+| Correctness | 60.0% → 100.0% (+40.0 points) | 85.0% → 100.0% (+15.0 points) |
 | Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
-| Effectiveness | 50.0% → 100.0% (+50.0 points) | 81.3% → 100.0% (+18.7 points) |
-| Efficiency | 77.2% — baseline ran, but no comparable score was available; uplift unavailable | 70.9% — baseline ran, but no comparable score was available; uplift unavailable |
+| Effectiveness | 43.8% → 100.0% (+56.2 points) | 87.5% → 93.8% (+6.3 points) |
+| Efficiency | 86.2% — baseline ran, but no comparable score was available; uplift unavailable | 73.0% — baseline ran, but no comparable score was available; uplift unavailable |
 
 **How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
 
@@ -70,9 +70,9 @@ Shared-source comparisons use the same signals and weights on both conditions. T
 | Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
 | --- | --- | --- | --- | --- |
 | claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| claude-code | Efficiency | Token-only comparison | 98.3% → 92.3% (-6.0 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| claude-code | Efficiency | Token-only comparison | 98.5% → 91.2% (-7.3 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 | codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| codex | Efficiency | Token-only comparison | 85.1% → 85.1% (±0.0 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Efficiency | Token-only comparison | 84.7% → 87.1% (+2.4 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 
 ## Token Usage
 
@@ -80,17 +80,17 @@ Actual Tier 3 execution usage is reported for every observed agent/case pair and
 
 | Agent | Dataset case | With skill | Without skill | Delta | Change | Coverage |
 |---|---|---:|---:|---:|---:|---|
-| claude-code | All cases | 915,492 | 393,902 | +521,590 | +132.42% | skill 4/4; base 4/4 |
-| claude-code | doca-bench.explicit-positive.v1 | 274,403 | 107,229 | +167,174 | +155.90% | skill 1/1; base 1/1 |
-| claude-code | doca-bench.implicit-positive.v1 | 330,200 | 107,563 | +222,637 | +206.98% | skill 1/1; base 1/1 |
-| claude-code | doca-bench.implicit-positive.v2 | 275,224 | 107,855 | +167,369 | +155.18% | skill 1/1; base 1/1 |
-| claude-code | doca-bench.negative.v1 | 35,665 | 71,255 | -35,590 | -49.95% | skill 1/1; base 1/1 |
-| codex | All cases | 383,212 | 168,553 | +214,659 | +127.35% | skill 4/4; base 4/4 |
-| codex | doca-bench.explicit-positive.v1 | 127,106 | 75,673 | +51,433 | +67.97% | skill 1/1; base 1/1 |
-| codex | doca-bench.implicit-positive.v1 | 130,391 | 35,651 | +94,740 | +265.74% | skill 1/1; base 1/1 |
-| codex | doca-bench.implicit-positive.v2 | 103,074 | 26,462 | +76,612 | +289.52% | skill 1/1; base 1/1 |
-| codex | doca-bench.negative.v1 | 22,641 | 30,767 | -8,126 | -26.41% | skill 1/1; base 1/1 |
-| ALL AGENTS | Dataset aggregate | 1,298,704 | 562,455 | +736,249 | +130.90% | skill 8/8; base 8/8 |
+| claude-code | All cases | 875,777 | 287,008 | +588,769 | +205.14% | skill 4/4; base 4/4 |
+| claude-code | doca-bench.explicit-positive.v1 | 284,378 | 71,344 | +213,034 | +298.60% | skill 1/1; base 1/1 |
+| claude-code | doca-bench.implicit-positive.v1 | 276,823 | 72,153 | +204,670 | +283.66% | skill 1/1; base 1/1 |
+| claude-code | doca-bench.implicit-positive.v2 | 278,916 | 108,285 | +170,631 | +157.58% | skill 1/1; base 1/1 |
+| claude-code | doca-bench.negative.v1 | 35,660 | 35,226 | +434 | +1.23% | skill 1/1; base 1/1 |
+| codex | All cases | 277,145 | 205,560 | +71,585 | +34.82% | skill 4/4; base 4/4 |
+| codex | doca-bench.explicit-positive.v1 | 96,840 | 113,495 | -16,655 | -14.67% | skill 1/1; base 1/1 |
+| codex | doca-bench.implicit-positive.v1 | 79,060 | 39,002 | +40,058 | +102.71% | skill 1/1; base 1/1 |
+| codex | doca-bench.implicit-positive.v2 | 74,789 | 26,465 | +48,324 | +182.60% | skill 1/1; base 1/1 |
+| codex | doca-bench.negative.v1 | 26,456 | 26,598 | -142 | -0.53% | skill 1/1; base 1/1 |
+| ALL AGENTS | Dataset aggregate | 1,152,922 | 492,568 | +660,354 | +134.06% | skill 8/8; base 8/8 |
 
 Prompt tokens include cached reads, so total tokens are `prompt + completion` (cached is not added twice). The Efficiency score uses `(prompt - cached) + completion`. Change is `100 * (with - without) / without`; negative means fewer tokens. N/A comparisons include their reason in the coverage column; coverage is never estimated.
 
@@ -107,11 +107,15 @@ Prompt tokens include cached reads, so total tokens are `prompt + completion` (c
 <details>
 <summary>Show detailed findings and successful checks</summary>
 
-- **CRITICAL** CONTENT_DEDUP/llm_error: LLM analysis failed for a content cluster (`skills/tools/doca-bench`)
-- **CRITICAL** CONTENT_DEDUP/llm_error: LLM analysis failed for a content cluster (`skills/tools/doca-bench`)
 - **HIGH** DUPLICATE/duplicate: Duplicate content found within CAPABILITIES.md:
   "## Capabilities and modes" in CAPABILITIES.md (lines 69-76)
   vs "## Capabilities and modes" in CAPABILITIES.md (lines 114-120) (`CAPABILITIES.md:69`)
+- **MEDIUM** DUPLICATE/duplicate: Duplicate content found within TASKS.md:
+  "## Command appendix" in TASKS.md (lines 454-469)
+  vs "## Cross-cutting" in TASKS.md (lines 477-503) (`TASKS.md:454`)
+- **MEDIUM** DUPLICATE/duplicate: Duplicate content found across CAPABILITIES.md and TASKS.md:
+  "## Error taxonomy" in CAPABILITIES.md (lines 192-274)
+  vs "## debug" in TASKS.md (lines 322-375) (`CAPABILITIES.md:192`)
 - **MEDIUM** SCHEMA/metadata_key_style: Metadata key 'doca_version' is not kebab-case (`skills/tools/doca-bench/SKILL.md`)
 - **MEDIUM** SCHEMA/folder_hierarchy: Unexpected nesting depth for general skill (`skills/tools/doca-bench`)
 - 10 additional finding(s) are available in the full evaluation artifacts.

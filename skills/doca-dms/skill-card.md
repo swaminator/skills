@@ -1,5 +1,5 @@
 ## Description: <br>
-Guides operating the NVIDIA DOCA Management Service (DMS) on a BlueField Arm, x86 host, or Kubernetes pod, covering the local dms-cli (DOCA 3.5+), bringing up the dmsd frontend and dmspe backend, choosing deployment shape and authentication mode, configuring -allowed_users and dmsgroup, issuing gNMI Get/Set and supported gNOI operations behind a target-bound confirmation gate for destructive actions, and debugging frontend-versus-backend failures and logs. <br>
+Operate NVIDIA DOCA Management Service on a BlueField, Arm/x86 host, or Kubernetes pod: from DOCA 3.5 the local `dms-cli` (one command per YANG path, no server), and the `dmsd` + `dmspe` service: choose deployment and authentication, configure `-allowed_users` and `dmsgroup`, use gNMI Get/Set, run supported gNOI workflows, and debug frontend/backend failures. <br>
 
 This skill is ready for commercial/non-commercial use. <br>
 
@@ -9,7 +9,7 @@ NVIDIA <br>
 ### License/Terms of Use: <br>
 Apache 2.0 AND CC-BY-4.0 <br>
 ## Use Case: <br>
-External operators and platform teams use this skill to manage NVIDIA BlueField and ConnectX targets from a centralized control plane: deciding where DMS should run, launching and authenticating dmsd, reading and setting YANG-modeled configuration through dms-cli or gNMI, running gNOI workflows such as reboot, OS install, file transfer, and mlxconfig with explicit confirmation, and diagnosing failed requests, logs, and persistency issues. <br>
+External operators and platform teams use this skill to deploy and operate NVIDIA DOCA Management Service (DMS) for managing BlueField networking platforms or ConnectX SmartNICs: choosing deployment shape and authentication mode, issuing gNMI Get/Set and gNOI operations (with explicit target-bound confirmation for destructive actions), and debugging frontend/backend failures and logs. <br>
 
 ### Deployment Geography for Use: <br>
 Global <br>
@@ -27,15 +27,15 @@ Mitigation: Review and scan skill before deployment. <br>
 ## Reference(s): <br>
 - [CAPABILITIES.md](CAPABILITIES.md) <br>
 - [TASKS.md](TASKS.md) <br>
-- [DOCA SDK Documentation Index](https://docs.nvidia.com/doca/sdk/index.html) <br>
-- [NVIDIA DOCA Developer Forum](https://forums.developer.nvidia.com/c/infrastructure/doca/370) <br>
+- [NVIDIA DOCA SDK documentation](https://docs.nvidia.com/doca/sdk/index.html) <br>
+- [DOCA Developer Forum](https://forums.developer.nvidia.com/c/infrastructure/doca/370) <br>
 
 
 ## Skill Output: <br>
-**Output Type(s):** [Analysis, Shell commands, Configuration instructions] <br>
+**Output Type(s):** [Shell commands, Configuration instructions, Analysis] <br>
 **Output Format:** [Markdown with inline bash code blocks] <br>
 **Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [None] <br>
+**Other Properties Related to Output:** [Destructive gNOI operations (reboot, OS install, factory-reset, managed-file deletion) are gated behind target-bound explicit confirmation; otherwise the skill stops with confirmation_required.] <br>
 
 ## Evaluation Agents Used: <br>
 - Claude Code (`aws/anthropic/bedrock-claude-opus-5-5`) <br>
@@ -44,39 +44,70 @@ Mitigation: Review and scan skill before deployment. <br>
 
 
 ## Evaluation Tasks: <br>
-4 evaluation tasks (3 positive, 1 negative), one attempt per task, each in an isolated k8s-sandbox pod. <br>
+4 evaluation tasks (3 positive, 1 negative), 1 attempt per task, each attempt in its own isolated sandbox pod (`k8s-sandbox` environment); evaluator version `1.6.10`, evaluated 2026-11-23. Three-tier evaluation: Tier 1 static validation, Tier 2 semantic deduplication, Tier 3 live agent evaluation with and without the skill (baseline). <br>
 
 ## Evaluation Metrics Used: <br>
 Reported benchmark dimensions: <br>
-- Security: Whether the skill is safe to use, checking for unsafe operations, secret leakage, and unauthorized access. <br>
-- Correctness: Whether the final answer is correct against the reference answer. <br>
-- Discoverability: Whether the expected skill was loaded when needed and decoys were avoided. <br>
-- Effectiveness: Whether the skill helped complete the task, as the equal-weight mean of goal completion and expected-workflow adherence. <br>
-- Efficiency: Whether the skill avoided wasted tool calls and token usage, as the equal-weight mean of tool-call productivity and token efficiency. <br>
+- Security: Is it safe to use? Scored from `security` (100%). <br>
+- Correctness: Is the answer correct? Scored from `accuracy` (100%). <br>
+- Discoverability: Was the right skill loaded when needed? Scored from `skill_execution` (100%). <br>
+- Effectiveness: Did the skill help complete the task? Scored from `goal_accuracy` (50%) + `behavior_check` (50%). <br>
+- Efficiency: Did it avoid wasted tool calls and token usage? Scored from `skill_efficiency` (50%) + `token_efficiency` (50%). <br>
 
 Underlying evaluation signals used in this run: <br>
-- `security`: Unsafe operations, secret leakage, and unauthorized access. <br>
-- `accuracy`: Final-answer correctness against the reference answer. <br>
-- `skill_execution`: Whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
-- `skill_efficiency`: Tool-call productivity. <br>
-- `goal_accuracy`: Whether the user's goal was achieved. <br>
-- `behavior_check`: Whether the expected workflow behavior was followed. <br>
-- `token_efficiency`: Actual uncached prompt plus completion token usage. <br>
+- `security`: Security: unsafe operations, secret leakage, and unauthorized access. <br>
+- `skill_execution`: Skill Execution: whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
+- `skill_efficiency`: Tool Productivity: tool-call productivity (legacy wire id; routing is scored under Discoverability). <br>
+- `accuracy`: Accuracy: final-answer correctness against the reference answer. <br>
+- `goal_accuracy`: Goal Accuracy: whether the user's goal was achieved. <br>
+- `behavior_check`: Behavior Check: whether the expected workflow behavior was followed. <br>
+- `token_efficiency`: Token Efficiency: actual uncached prompt plus completion usage (50% of Efficiency). <br>
 
 
 
 ## Evaluation Results: <br>
+**Overall verdict: PASS — Recommended for publication**
+
+**Publication Recommendation:** Recommended for publication based on the completed evaluation evidence in this report.
+
+### Results at a Glance
+
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 90.3% — baseline ran, but no comparable score was available; uplift unavailable | 85.8% — baseline ran, but no comparable score was available; uplift unavailable |
-| Security | 100.0% → 100.0% (±0.0 points) | 100.0% → 100.0% (±0.0 points) |
-| Correctness | 55.0% → 90.0% (+35.0 points) | 80.0% → 90.0% (+10.0 points) |
+| Overall | 94.0% — baseline ran, but no comparable score was available; uplift unavailable | 86.5% — baseline ran, but no comparable score was available; uplift unavailable |
+| Security | 100.0% → 100.0% (±0.0 points) | 87.5% → 100.0% (+12.5 points) |
+| Correctness | 55.0% → 95.0% (+40.0 points) | 65.0% → 90.0% (+25.0 points) |
 | Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
-| Effectiveness | 25.0% → 75.0% (+50.0 points) | 56.3% → 75.0% (+18.7 points) |
-| Efficiency | 86.3% — baseline ran, but no comparable score was available; uplift unavailable | 69.1% — baseline ran, but no comparable score was available; uplift unavailable |
+| Effectiveness | 25.0% → 87.5% (+62.5 points) | 62.5% → 81.3% (+18.8 points) |
+| Efficiency | 87.5% — baseline ran, but no comparable score was available; uplift unavailable | 66.2% — baseline ran, but no comparable score was available; uplift unavailable |
+
+**How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
+
+Example: `47.0% → 92.0% (+45.0 points)` means the skill-assisted run scored 92.0%, 45.0 percentage points above its 47.0% no-skill baseline.
+
+A partial dimension was calculated from only the available configured signals; review the detailed report before relying on it.
+
+#### Comparison details
+
+Shared-source comparisons use the same signals and weights on both conditions. They do not replace the full dimension scores above or change the publication verdict.
+
+| Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
+| --- | --- | --- | --- | --- |
+| claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| claude-code | Efficiency | Token-only comparison | 98.3% → 92.8% (-5.5 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| codex | Efficiency | Token-only comparison | 83.7% → 82.5% (-1.2 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+
+### Tier Status
+
+| Tier | Purpose | Status | Evidence |
+|---|---|---|---|
+| Tier 1 | Static validation | **PASSED WITH OBSERVATIONS** | 11 validator(s); 20 finding(s) |
+| Tier 2 | Semantic deduplication | **PASSED** | 2 validator(s); 0 finding(s) |
+| Tier 3 | Live agent evaluation | **PASS** | 2 agent(s); 4 task(s) |
 
 ## Skill Version(s): <br>
-c98e456 (source: git SHA, committed 2026-10-28) <br>
+444e267 (source: git SHA, committed 2026-11-23) <br>
 
 ## Ethical Considerations: <br>
 NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications. When downloaded or used in accordance with our terms of service, developers should work with their internal team to ensure this skill meets requirements for the relevant industry and use case and addresses unforeseen product misuse. <br>

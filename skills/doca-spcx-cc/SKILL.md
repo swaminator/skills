@@ -21,7 +21,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: tool
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - pcc
@@ -37,6 +37,8 @@ compatibility: >
 ---
 
 # DOCA SPCX Congestion-Control Tool
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -108,8 +110,8 @@ load-bearing piece; the worked example is one instance.
   the tasks companion.
 - **"My SPCX algorithm appears to load cleanly but the
   link's throughput / latency curve is unchanged — what's
-  going on?"** — worked example: *"the host-side `doca_pcc
-  --status` reports `Active` and a stable session, but my
+  going on?"** — worked example: *"the host-side status reports
+  `DOCA_PCC_PS_ACTIVE` and a stable session, but my
   RoCE flows look unchanged"*. Answered by the live-link /
   contention rule in
   the capabilities companion
@@ -187,8 +189,8 @@ live RDMA / RoCE fabric**. Concretely:
   prose.
 
 It is **not** for users debugging the `doca_spcx_cc`
-binary itself, **not** a substitute for the live public
-DOCA SPCX / DOCA PCC programming guides, **not** the
+binary itself, **not** a substitute for the installed `--help`, the
+DOCA release notes, or the public DOCA PCC guide, **not** the
 right place for the DPA-side algorithm authoring detail
 (that path goes through the public DOCA PCC programming guide and the
 `doca-pcc/SKILL.md` +
@@ -324,8 +326,7 @@ should not add:
   operators elsewhere.
 - **Flag strings, subcommand names, probe-packet format tokens,
   or metric names beyond the DOCA release notes and `--help`.**
-  This surface still evolves; the installed `--help` is the
-  authoritative inventory.
+  Flags can change between releases; `--help` wins.
 - **Wrappers, parsers, or scripts** consuming the tool's output.
   The format is documented; script against your installed
   version using the release notes.
@@ -381,7 +382,7 @@ should not add:
   `## Safety policy` layers on. Deploying a wrong CC algorithm on a
   production fabric is a *meta-policy STOP* case.
 - `doca-public-knowledge-map/SKILL.md`
-  — routing to the public SPCX, PCC, and DPA / DPACC guides.
+  — routing to the DOCA release notes and the public PCC, DPA, and DPACC guides.
 - `doca-version/SKILL.md` — canonical DOCA
   version handling. `## Version compatibility` in
   the capabilities companion adds the *tool ↔ `doca-pcc`

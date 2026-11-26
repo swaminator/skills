@@ -19,7 +19,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - upgrade
@@ -35,12 +35,19 @@ compatibility: >
 
 # DOCA upgrade
 
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
+
 ## Examples
 
 - **"Should I move to the next DOCA release?"** — detect what is
   installed, report the gap, then STOP and ask. Never auto-upgrade.
 - **"apt upgrade drifted my DOCA packages."** — this is recovery,
   not a silent repair. Detect, report, ask, then guide.
+- **"An upgrade broke my app — get me back to known-good."** Roll back to
+  the state the operator captured, never to a version recalled from memory:
+  pin or reinstall the captured prior DOCA package set (or redeploy the
+  prior base image / container tag), re-align the BFB if it changed, then
+  re-verify the four-way match against the captured baseline.
 
 ## Quick answers (answer from this file)
 
@@ -150,9 +157,8 @@ load-bearing piece — the worked example is a single instance.
   ## run; this skill never redefines the
   reflash, mode-flip, or cold-power-cycle discipline.
 - **"My installed component is being sunset — should I keep building
-  on it or move?"** — worked example: *"I rely on DOCA App Shield /
-  the DOCA Flow Inspector service; are they on a
-  deprecation track?"*. Answered by the sunset / deprecation
+  on it or move?"** — worked example: *"I rely on a component my
+  release notes mark deprecated; what now?"*. Answered by the sunset / deprecation
   awareness concern in
   ## Capabilities and modes,
   which routes the user to the public release notes via
@@ -292,5 +298,5 @@ lives in two companion files:
   mechanics live there.
 - `doca-structured-tools-contract/SKILL.md` —
   the JSON schemas the agent prefers when present; the upgrade
-  detect step reuses the same `doca-env` one-shot the version skill
-  uses, when the host has it.
+  detect step reuses the same site-provided env-report helper the
+  version skill uses, when the site provides one.

@@ -8,7 +8,7 @@ description: >
   per-CUDA-device doca_gpu context, designing the persistent CUDA kernel
   that drains the GPU-visible queue, running the dual capability check
   (DOCA cap-query plus cudaGetDeviceProperties), registering cudaMalloc
-  pools via doca_buf_arr_create_*, or debugging DOCA_ERROR_* returns
+  pools via doca_buf_arr_create, or debugging DOCA_ERROR_* returns
   from the GPUNetIO API. Trigger even when the user does not explicitly
   mention "DOCA GPUNetIO" or "persistent kernel" — typical implicit
   phrasings include "CUDA kernel reading packets directly from the NIC",
@@ -20,14 +20,14 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - gpunetio
     - cuda
 compatibility: >
   Requires DOCA SDK at /opt/mellanox/doca on Linux (Ubuntu 22.04/24.04
-  or RHEL/SLES) with a BlueField DPU or ConnectX NIC. Reads the local
+  or RHEL/SLES) with a BlueField DPU or ConnectX NIC. On the user's DOCA host, reads the local
   install via `pkg-config doca-gpunetio`. Requires an NVIDIA GPU with
   CUDA toolkit (matched to DOCA per the DOCA Compatibility Policy) and
   GPU memory registered via dmabuf (or the legacy nvidia-peermem fallback) for GPUDirect RDMA; some
@@ -36,6 +36,8 @@ compatibility: >
 ---
 
 # DOCA GPUNetIO
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -97,7 +99,7 @@ instance.
   ## configure step 1.
 - **"How do I move data between CUDA-allocated buffers and a DOCA
   queue?"** — worked example: *"use `cudaMalloc` for the receive
-  buffer pool and register it with DOCA via `doca_buf_arr_create_*`
+  buffer pool and register it with DOCA via `doca_buf_arr_create` + `doca_buf_arr_set_target_gpu`
   before starting the context"*. Answered by the CUDA-allocator
   + DOCA-registration overlay in
   ## Safety policy
@@ -162,7 +164,7 @@ work, in any host language plus CUDA. Concretely:
   the GPU-visible RX queue in a long-running loop (the canonical
   GPU Packet Processing shape).
 - Allocating GPU buffers via `cudaMalloc` and registering them
-  with DOCA via the `doca_buf_arr_create_*` family before
+  with DOCA via `doca_buf_arr_create` + `doca_buf_arr_set_*` (e.g. `doca_buf_arr_set_target_gpu`) before
   `doca_ctx_start()`.
 - Checking which GPUNetIO features are supported on the active
   `doca_devinfo` (DOCA cap-query family) AND on the candidate

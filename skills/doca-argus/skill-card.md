@@ -1,5 +1,5 @@
 ## Description: <br>
-Guides deploying and operating the DOCA Argus Service, the BlueField-Arm runtime-security container that watches the BlueField and attached host for suspicious activity, integrity violations, and operational anomalies, covering its four-axis configuration (detection policy, forwarding, sampling, host coverage), running the NGC container, wiring findings to a SIEM (Splunk, ELK, Sentinel, syslog), and debugging missing, flooding, unforwarded, or performance-impacting findings. <br>
+Use this skill when the user is deploying or operating the DOCA Argus Service — the packaged BlueField-side runtime-security container that watches the BlueField and attached host for suspicious activity, integrity violations, and operational anomalies, and forwards findings to a SIEM (Splunk / ELK / Sentinel / syslog), covering the four-axis config (detection policy, forwarding, sampling, host coverage), running the NGC container on BlueField Arm, and wiring the forwarder, while routing DOCA install, SIEM-side ingest stanzas, pre-baked detection-rule packs, and metrics observability (DOCA Telemetry) elsewhere. <br>
 
 This skill is ready for commercial/non-commercial use. <br>
 
@@ -7,9 +7,9 @@ This skill is ready for commercial/non-commercial use. <br>
 NVIDIA <br>
 
 ### License/Terms of Use: <br>
-Apache 2.0 AND CC-BY-4.0 <br>
+Apache-2.0 <br>
 ## Use Case: <br>
-External security operators and platform teams use this skill to decide whether Argus fits their security posture, deploy and configure the Argus container on BlueField Arm, forward findings to an existing SIEM, validate the end-to-end pipeline through the calibration period, and debug deployments where findings are missing, noisy, not forwarded, or degrading workload performance. <br>
+External security operators and platform teams use this skill to deploy and operate the DOCA Argus Service container on BlueField Arm — choosing the detection policy, forwarding destination, sampling, and host coverage, wiring findings into their existing SIEM, validating the end-to-end pipeline through the calibration period, and debugging missing, flooding, unforwarded, or performance-impacting findings. <br>
 
 ### Deployment Geography for Use: <br>
 Global <br>
@@ -27,7 +27,7 @@ Mitigation: Review and scan skill before deployment. <br>
 ## Reference(s): <br>
 - [CAPABILITIES.md](CAPABILITIES.md) <br>
 - [TASKS.md](TASKS.md) <br>
-- [DOCA SDK Documentation Index](https://docs.nvidia.com/doca/sdk/index.html) <br>
+- [DOCA SDK documentation](https://docs.nvidia.com/doca/sdk/index.html) <br>
 - [NVIDIA DOCA Developer Forum](https://forums.developer.nvidia.com/c/infrastructure/doca/370) <br>
 
 
@@ -44,39 +44,70 @@ Mitigation: Review and scan skill before deployment. <br>
 
 
 ## Evaluation Tasks: <br>
-4 evaluation tasks (3 positive, 1 negative), one attempt per task, each in an isolated k8s-sandbox pod. <br>
+4 evaluation tasks (3 positive, 1 negative), 1 attempt per task, run in the `k8s-sandbox` environment with each task attempt in its own isolated sandbox pod; evaluated with evaluator version `1.6.10` on 2026-11-23. <br>
 
 ## Evaluation Metrics Used: <br>
 Reported benchmark dimensions: <br>
-- Security: Whether the skill is safe to use, checking for unsafe operations, secret leakage, and unauthorized access. <br>
-- Correctness: Whether the final answer is correct against the reference answer. <br>
-- Discoverability: Whether the expected skill was loaded when needed and decoys were avoided. <br>
-- Effectiveness: Whether the skill helped complete the task, as the equal-weight mean of goal completion and expected-workflow adherence. <br>
-- Efficiency: Whether the skill avoided wasted tool calls and token usage. <br>
+- Security: Is it safe to use? Scored from `security` (100%). <br>
+- Correctness: Is the answer correct? Scored from `accuracy` (100%). <br>
+- Discoverability: Was the right skill loaded when needed? Scored from `skill_execution` (100%). <br>
+- Effectiveness: Did the skill help complete the task? Scored from `goal_accuracy` (50%) + `behavior_check` (50%). <br>
+- Efficiency: Did it avoid wasted tool calls and token usage? Scored from `skill_efficiency` (50%) + `token_efficiency` (50%). <br>
 
 Underlying evaluation signals used in this run: <br>
-- `security`: Unsafe operations, secret leakage, and unauthorized access. <br>
-- `accuracy`: Final-answer correctness against the reference answer. <br>
-- `skill_execution`: Whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
-- `skill_efficiency`: Tool-call productivity. <br>
-- `goal_accuracy`: Whether the user's goal was achieved. <br>
-- `behavior_check`: Whether the expected workflow behavior was followed. <br>
-- `token_efficiency`: Actual uncached prompt plus completion token usage. <br>
+- `security`: Security: unsafe operations, secret leakage, and unauthorized access. <br>
+- `skill_execution`: Skill Execution: whether the expected skill was selected, decoys were avoided, and the workflow executed. <br>
+- `skill_efficiency`: Tool Productivity: tool-call productivity (legacy wire id; routing is scored under Discoverability). <br>
+- `accuracy`: Accuracy: final-answer correctness against the reference answer. <br>
+- `goal_accuracy`: Goal Accuracy: whether the user's goal was achieved. <br>
+- `behavior_check`: Behavior Check: whether the expected workflow behavior was followed. <br>
+- `token_efficiency`: Token Efficiency: actual uncached prompt plus completion usage (50% of Efficiency). <br>
 
 
 
 ## Evaluation Results: <br>
+### Results at a Glance
+
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 97.6% — baseline ran, but no comparable score was available; uplift unavailable | 94.3% — baseline ran, but no comparable score was available; uplift unavailable |
+| Overall | 95.1% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
 | Security | 100.0% → 100.0% (±0.0 points) | 100.0% → 100.0% (±0.0 points) |
-| Correctness | 55.0% → 100.0% (+45.0 points) | 70.0% → 100.0% (+30.0 points) |
+| Correctness | 55.0% → 100.0% (+45.0 points) | 65.0% → 100.0% (+35.0 points) |
 | Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
-| Effectiveness | 50.0% → 100.0% (+50.0 points) | 62.5% → 100.0% (+37.5 points) |
-| Efficiency | 88.2% — baseline ran, but no comparable score was available; uplift unavailable | 76.5% — baseline ran, but no comparable score was available; uplift unavailable |
+| Effectiveness | 50.0% → 81.3% (+31.3 points) | 62.5% → 100.0% (+37.5 points) |
+| Efficiency | 94.3% — baseline ran, but no comparable score was available; uplift unavailable | 80.1% — baseline ran, but no comparable score was available; uplift unavailable |
+
+**How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
+
+Example: `47.0% → 92.0% (+45.0 points)` means the skill-assisted run scored 92.0%, 45.0 percentage points above its 47.0% no-skill baseline.
+
+A partial dimension was calculated from only the available configured signals; review the detailed report before relying on it.
+
+#### Comparison details
+
+Shared-source comparisons use the same signals and weights on both conditions. They do not replace the full dimension scores above or change the publication verdict.
+
+| Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
+| --- | --- | --- | --- | --- |
+| claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| claude-code | Efficiency | Token-only comparison | 98.4% → 93.3% (-5.1 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
+| codex | Efficiency | Token-only comparison | 88.2% → 87.5% (-0.7 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+
+#### Tier Status
+
+| Tier | Purpose | Status | Evidence |
+|---|---|---|---|
+| Tier 1 | Static validation | **PASSED WITH OBSERVATIONS** | 11 validator(s); 11 finding(s) |
+| Tier 2 | Semantic deduplication | **PASSED WITH OBSERVATIONS** | 2 validator(s); 1 finding(s) |
+| Tier 3 | Live agent evaluation | **PASS** | 2 agent(s); 4 task(s) |
+
+**Overall verdict:** PASS — Recommended for publication
+
+**Publication Recommendation:** Recommended for publication based on the completed evaluation evidence in this report.
 
 ## Skill Version(s): <br>
-c98e456 (source: git SHA, committed 2026-10-28) <br>
+444e267 (source: git SHA, committed 2026-11-23); DOCA 3.6 (source: frontmatter metadata.doca_version) <br>
 
 ## Ethical Considerations: <br>
 NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications. When downloaded or used in accordance with our terms of service, developers should work with their internal team to ensure this skill meets requirements for the relevant industry and use case and addresses unforeseen product misuse. <br>

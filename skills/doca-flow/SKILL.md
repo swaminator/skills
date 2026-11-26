@@ -19,7 +19,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - flow
@@ -27,12 +27,14 @@ metadata:
 compatibility: >
   Requires DOCA SDK installed at /opt/mellanox/doca on Linux (Ubuntu
   22.04/24.04 or RHEL/SLES) with a supported NVIDIA NIC/DPU attached.
-  Reads the user's local install via `pkg-config doca-flow` and inspects
+  On the user's DOCA host, reads the user's local install via `pkg-config doca-flow` and inspects
   /opt/mellanox/doca/{lib,include,samples,applications}.
   The validation steps require a live DOCA install.
 ---
 
 # DOCA Flow
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -41,6 +43,10 @@ compatibility: >
   a first-app `main.c`.
 - **“Match 5-tuple and send to a queue.”** — express it as a Flow
   pipe. Do not fall back to kernel tc or iptables.
+- **"Write my first DOCA Flow app."** Start from a shipped sample, not
+  authored code: `ls /opt/mellanox/doca/samples/doca_flow/`, copy the closest
+  one, build it, then make the minimum change. The NGC container builds and
+  links it, but pipe creation needs a real BlueField or ConnectX at runtime.
 
 ## Instructions
 
@@ -48,8 +54,8 @@ Follow Loading order below. Open the tasks companion for configure /
 modify / debug. Open the capabilities companion for the pipe-spec
 schema and safety policy.
 For connection tracking, read the tasks companion's `flow-ct` section
-before starting ports: CT initialization is process-global and must precede
-port start. Adding CT to running ports requires an approved interruption
+before starting ports: in DOCA 3.6 CT is configured on each port's
+`doca_flow_port_cfg` (`doca_flow_port_cfg_set_ct_*`) before that port starts. Adding CT to running ports requires an approved interruption
 and reconstruction from a captured configuration, not a per-port
 `doca_ctx_start` call or reuse of invalidated pipe handles.
 

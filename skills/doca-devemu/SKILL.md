@@ -5,7 +5,7 @@ description: >
   Use this skill when the user is doing hands-on DOCA Device Emulation
   on a BlueField DPU — exposing a custom emulated PCIe device the host
   sees as a real peripheral while DPU-side code runs the backend,
-  picking the sub-library (PCI Generic, virtio-net, virtio-fs), wiring
+  picking the sub-library (PCI Generic, virtio-net, virtio-fs, virtio-blk, NVMe), wiring
   the per-sub-library Core context plus doorbell / DMA primitives,
   querying `doca_devemu_*_cap_*`, or debugging DOCA_ERROR_* from a
   `doca_devemu_*` call. Trigger even when the user does not say "devemu"
@@ -20,7 +20,7 @@ description: >
 metadata:
   author: NVIDIA <doca-feedback@nvidia.com>
   kind: library
-  doca_version: "3.5"
+  doca_version: "3.6"
   tags:
     - doca
     - devemu
@@ -36,6 +36,8 @@ compatibility: >
 ---
 
 # DOCA Device Emulation
+
+> **Host checks.** Commands here that inspect the user's DOCA host (listing or reading `/opt/mellanox/doca`, release files such as `/etc/mlnx-release` or `/etc/nvidia/bf-release`, `/dev/mst`) or reach the BlueField (RShim, SSH, BMC) are for that host. Run them yourself only if the user confirms you are on it; otherwise answer from this skill, give the commands for the user to run, and treat values you can't see as unknown.
 
 ## Examples
 
@@ -68,8 +70,9 @@ installed DOCA yet, route to
 anything else, the agent must route the user to the right
 sub-library** — DOCA Device Emulation is an *umbrella* that
 covers PCI Generic (raw PCIe device emulation), virtio-net
-(emulated virtio network device), and virtio-fs (emulated
-virtio filesystem device); each sub-library has its own
+(emulated virtio network device), virtio-fs (emulated
+virtio filesystem device), virtio-blk (emulated block device)
+and NVMe (emulated NVMe controller); each sub-library has its own
 context, its own `pkg-config` module, and its own capability
 surface. The sub-library selection rule lives in
 the capabilities companion.
@@ -99,7 +102,7 @@ Service and the DOCA Virtio-net Service are the packaged
 options that build on top of this library).
 
 **Language scope.** DOCA Device Emulation ships as a C library;
-this skill covers three sub-libraries end-to-end. Select the exact
+this skill covers the five sub-libraries in the capabilities companion's selection table end-to-end. Select the exact
 installed `pkg-config` module for the user's emulation class (see
 the sub-library selection table in
 the capabilities companion).

@@ -10,8 +10,8 @@ Recommended for publication based on the completed evaluation evidence in this r
 
 - Skill: `doca-erasure-coding`
 - Validation status: `passed`
-- Evaluation date: 2026-10-28
-- Evaluator version: `1.6.2`
+- Evaluation date: 2026-11-23
+- Evaluator version: `1.6.10`
 - Agents: Claude Code (`aws/anthropic/bedrock-claude-opus-5-5`), Codex (`openai/openai/gpt-6.1-sol`)
 - Tasks: 4 evaluation tasks (3 positive, 1 negative)
 - Dataset digest: `sha256:ce6ee874a1ed1103e7f48d2a35930d6eafc4d66d818d35f6cca641d5b505d03e` (skill-evaluator-dataset-snapshot/1)
@@ -28,11 +28,11 @@ SkillSpector provider, model, analyzer revision, and determinism evidence retain
 
 | Skill | Provider | Adapter | Analyzer | Model | Revision | Determinism |
 | --- | --- | --- | --- | --- | --- | --- |
-| doca-erasure-coding | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-erasure-coding | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-erasure-coding | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-erasure-coding | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
-| doca-erasure-coding | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.1` | nondeterministic / provider_defaults |
+| doca-erasure-coding | nv_inference | openai | mcp_tool_poisoning | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-erasure-coding | nv_inference | openai | semantic_developer_intent | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-erasure-coding | nv_inference | openai | semantic_quality_policy | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-erasure-coding | nv_inference | openai | semantic_security_discovery | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
+| doca-erasure-coding | nv_inference | openai | meta_analyzer | `aws/anthropic/bedrock-claude-opus-5-5` | `2.13.5` | nondeterministic / provider_defaults |
 
 - Controls for `doca-erasure-coding`: temperature=not set (source=provider_default, forwarded=no); seed=not set (source=unset, forwarded=no); reasoning_effort=not set (source=provider_default, forwarded=no)
 
@@ -50,12 +50,12 @@ The three-tier evaluation checks whether the skill:
 
 | Measure | Claude Code (Baseline → Skill Uplift) | Codex (Baseline → Skill Uplift) |
 |---|---:|---:|
-| Overall | 98.2% — baseline ran, but no comparable score was available; uplift unavailable | 87.8% — baseline ran, but no comparable score was available; uplift unavailable |
-| Security | 75.0% → 100.0% (+25.0 points) | 87.5% → 100.0% (+12.5 points) |
-| Correctness | 45.0% → 100.0% (+55.0 points) | 70.0% → 90.0% (+20.0 points) |
+| Overall | 98.1% — baseline ran, but no comparable score was available; uplift unavailable | 90.7% — baseline ran, but no comparable score was available; uplift unavailable |
+| Security | 100.0% → 100.0% (±0.0 points) | 100.0% → 100.0% (±0.0 points) |
+| Correctness | 45.0% → 100.0% (+55.0 points) | 50.0% → 95.0% (+45.0 points) |
 | Discoverability | 100.0% — baseline ran, but no comparable score was available; uplift unavailable | 95.0% — baseline ran, but no comparable score was available; uplift unavailable |
-| Effectiveness | 43.8% → 100.0% (+56.2 points) | 58.3% → 83.3% (+25.0 points) |
-| Efficiency | 90.9% — baseline ran, but no comparable score was available; uplift unavailable | 70.9% — baseline ran, but no comparable score was available; uplift unavailable |
+| Effectiveness | 43.8% → 100.0% (+56.2 points) | 33.3% → 87.5% (+54.2 points) |
+| Efficiency | 90.5% — baseline ran, but no comparable score was available; uplift unavailable | 76.0% — baseline ran, but no comparable score was available; uplift unavailable |
 
 **How to read this table:** baseline is the same task attempted without the target skill. Scores are rounded to one decimal; threshold-adjacent values use additional precision so their displayed band matches the verdict. Uplift is derived from those displayed scores and shown in percentage points.
 
@@ -70,9 +70,9 @@ Shared-source comparisons use the same signals and weights on both conditions. T
 | Agent | Dimension | Basis | Baseline → With skill (uplift) | Explanation |
 | --- | --- | --- | --- | --- |
 | claude-code | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| claude-code | Efficiency | Token-only comparison | 96.9% → 92.1% (-4.8 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| claude-code | Efficiency | Token-only comparison | 97.3% → 92.1% (-5.2 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 | codex | Discoverability | Dimension comparison | N/A | Discoverability is not applicable to the no-skill baseline; there is no installed skill to discover. |
-| codex | Efficiency | Token-only comparison | 84.6% → 84.3% (-0.3 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
+| codex | Efficiency | Token-only comparison | 88.4% → 86.8% (-1.6 points) | Only Token Efficiency is comparable; the full dimension scores use different evaluator sources. |
 
 ## Token Usage
 
@@ -80,17 +80,17 @@ Actual Tier 3 execution usage is reported for every observed agent/case pair and
 
 | Agent | Dataset case | With skill | Without skill | Delta | Change | Coverage |
 |---|---|---:|---:|---:|---:|---|
-| claude-code | All cases | 813,355 | 673,769 | +139,586 | +20.72% | skill 4/4; base 4/4 |
-| claude-code | doca-erasure-coding.explicit-positive.v1 | 230,421 | 107,705 | +122,716 | +113.94% | skill 1/1; base 1/1 |
-| claude-code | doca-erasure-coding.implicit-positive.v1 | 275,484 | 384,704 | -109,220 | -28.39% | skill 1/1; base 1/1 |
-| claude-code | doca-erasure-coding.implicit-positive.v2 | 271,389 | 145,828 | +125,561 | +86.10% | skill 1/1; base 1/1 |
-| claude-code | doca-erasure-coding.negative.v1 | 36,061 | 35,532 | +529 | +1.49% | skill 1/1; base 1/1 |
-| codex | All cases | 426,749 | 317,843 | +108,906 | +34.26% | skill 4/4; base 4/4 |
-| codex | doca-erasure-coding.explicit-positive.v1 | 151,842 | 152,186 | -344 | -0.23% | skill 1/1; base 1/1 |
-| codex | doca-erasure-coding.implicit-positive.v1 | 130,901 | 41,086 | +89,815 | +218.60% | skill 1/1; base 1/1 |
-| codex | doca-erasure-coding.implicit-positive.v2 | 109,266 | 97,893 | +11,373 | +11.62% | skill 1/1; base 1/1 |
-| codex | doca-erasure-coding.negative.v1 | 34,740 | 26,678 | +8,062 | +30.22% | skill 1/1; base 1/1 |
-| ALL AGENTS | Dataset aggregate | 1,240,104 | 991,612 | +248,492 | +25.06% | skill 8/8; base 8/8 |
+| claude-code | All cases | 715,681 | 589,197 | +126,484 | +21.47% | skill 4/4; base 4/4 |
+| claude-code | doca-erasure-coding.explicit-positive.v1 | 176,919 | 108,370 | +68,549 | +63.25% | skill 1/1; base 1/1 |
+| claude-code | doca-erasure-coding.implicit-positive.v1 | 233,199 | 300,600 | -67,401 | -22.42% | skill 1/1; base 1/1 |
+| claude-code | doca-erasure-coding.implicit-positive.v2 | 269,531 | 144,805 | +124,726 | +86.13% | skill 1/1; base 1/1 |
+| claude-code | doca-erasure-coding.negative.v1 | 36,032 | 35,422 | +610 | +1.72% | skill 1/1; base 1/1 |
+| codex | All cases | 373,712 | 262,825 | +110,887 | +42.19% | skill 4/4; base 4/4 |
+| codex | doca-erasure-coding.explicit-positive.v1 | 117,001 | 137,889 | -20,888 | -15.15% | skill 1/1; base 1/1 |
+| codex | doca-erasure-coding.implicit-positive.v1 | 114,566 | 57,594 | +56,972 | +98.92% | skill 1/1; base 1/1 |
+| codex | doca-erasure-coding.implicit-positive.v2 | 107,293 | 40,968 | +66,325 | +161.89% | skill 1/1; base 1/1 |
+| codex | doca-erasure-coding.negative.v1 | 34,852 | 26,374 | +8,478 | +32.15% | skill 1/1; base 1/1 |
+| ALL AGENTS | Dataset aggregate | 1,089,393 | 852,022 | +237,371 | +27.86% | skill 8/8; base 8/8 |
 
 Prompt tokens include cached reads, so total tokens are `prompt + completion` (cached is not added twice). The Efficiency score uses `(prompt - cached) + completion`. Change is `100 * (with - without) / without`; negative means fewer tokens. N/A comparisons include their reason in the coverage column; coverage is never estimated.
 
@@ -107,16 +107,32 @@ Prompt tokens include cached reads, so total tokens are `prompt + completion` (c
 <details>
 <summary>Show detailed findings and successful checks</summary>
 
-- **CRITICAL** CONTENT_DEDUP/llm_error: LLM analysis failed for a content cluster (`skills/libs/doca-erasure-coding`)
-- **HIGH** DUPLICATE/duplicate: Duplicate content found within CAPABILITIES.md:
-  "## Capabilities and modes" in CAPABILITIES.md (lines 58-69)
-  vs "## Capabilities and modes" in CAPABILITIES.md (lines 103-130)
-  vs "## Safety policy" in CAPABILITIES.md (lines 319-345) (`CAPABILITIES.md:58`)
+- **HIGH** DUPLICATE/duplicate: Duplicate content found across CAPABILITIES.md and SKILL.md and TASKS.md:
+  "## Pattern overview" in CAPABILITIES.md (lines 16-19)
+  vs "## Pattern overview" in CAPABILITIES.md (lines 20-26)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 51-57)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 75-79)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 84-89)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 90-100)
+  vs "## Deferred topic boundaries" in CAPABILITIES.md (lines 378-415)
+  vs "## Instructions" in SKILL.md (lines 24-39)
+  vs "## Example questions this skill answers well" in SKILL.md (lines 54-57)
+  vs "## Example questions this skill answers well" in SKILL.md (lines 58-125)
+  vs "## Audience" in SKILL.md (lines 129-159)
+  vs "## When to load this skill" in SKILL.md (lines 160-218)
+  vs "## What this skill provides" in SKILL.md (lines 219-247)
+  vs "## configure" in TASKS.md (lines 29-32)
+  vs "## configure" in TASKS.md (lines 34-125)
+  vs "## modify" in TASKS.md (lines 169-177) (`CAPABILITIES.md:16`)
 - **HIGH** DUPLICATE/duplicate: Duplicate content found across CAPABILITIES.md and TASKS.md:
   "## Error taxonomy" in CAPABILITIES.md (lines 234-241)
   vs "## test" in TASKS.md (lines 247-309)
   vs "## test" in TASKS.md (lines 311-321)
   vs "## debug" in TASKS.md (lines 362-398) (`CAPABILITIES.md:234`)
+- **HIGH** DUPLICATE/duplicate: Duplicate content found within CAPABILITIES.md:
+  "## Capabilities and modes" in CAPABILITIES.md (lines 58-69)
+  vs "## Capabilities and modes" in CAPABILITIES.md (lines 103-130)
+  vs "## Safety policy" in CAPABILITIES.md (lines 319-345) (`CAPABILITIES.md:58`)
 - **MEDIUM** QUALITY/quality_discoverability: Description uses first/second person (`skills/libs/doca-erasure-coding/SKILL.md`)
 - **MEDIUM** SCHEMA/metadata_key_style: Metadata key 'doca_version' is not kebab-case (`skills/libs/doca-erasure-coding/SKILL.md`)
 - 14 additional finding(s) are available in the full evaluation artifacts.
